@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">COC</string>
+    <string name="slogan">海内存知己，天涯若比邻</string>
+    <string name="enter_mainpage">进入首页</string>
+
+    <string name="message">消息</string>
+    <string name="contaces">联系人</string>
+    <string name="dynamic">动态</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
