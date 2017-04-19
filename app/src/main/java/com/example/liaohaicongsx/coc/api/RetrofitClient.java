@@ -1,8 +1,10 @@
 package com.example.liaohaicongsx.coc.api;
 
 
+import com.example.liaohaicongsx.coc.api.interfaces.UserGetInfo;
 import com.example.liaohaicongsx.coc.api.interfaces.UserRegister;
 import com.example.liaohaicongsx.coc.model.ResponseUser;
+import com.example.liaohaicongsx.coc.model.ResponseUserInfos;
 import com.example.liaohaicongsx.coc.util.CheckSumBuilder;
 
 import java.util.Date;
@@ -13,10 +15,6 @@ import java.util.Random;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.HeaderMap;
-import retrofit2.http.POST;
 import rx.Observable;
 
 /**
@@ -53,6 +51,13 @@ public class RetrofitClient {
     public Observable<ResponseUser> userRegister(String accid,String name) {
         UserRegister userRegister = retrofit.create(UserRegister.class);
         return userRegister.register(getHeaderMap(),accid,name);
+    }
+
+    //用户账户搜索
+    public Observable<ResponseUserInfos> userGetInfos(String accid){
+        UserGetInfo uInfos = retrofit.create(UserGetInfo.class);
+        return uInfos.getUserInfos(getHeaderMap(),accid);
+
     }
 
 

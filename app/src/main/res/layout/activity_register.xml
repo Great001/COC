@@ -6,14 +6,60 @@
     tools:context="com.example.liaohaicongsx.coc.activity.RegisterActivity">
 
     <LinearLayout
+        android:id="@+id/ll_input_nickname"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/input_height"
+        android:orientation="horizontal"
+        >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text=""
-            android:gravity="center_vertical"/>
+            android:text="@string/account"
+            android:gravity="center_vertical"
+            android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/et_input_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_input_password"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/input_height"
+        android:orientation="horizontal"
+        android:layout_below="@id/ll_input_nickname"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/password"
+            android:gravity="center_vertical"
+            android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/et_input_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPassword"
+            android:hint="可以为空"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/input_height"
+        android:layout_below="@id/ll_input_password"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:text="@string/register_now"
+        android:background="@drawable/bg_login_button"
+        />
 
 </RelativeLayout>

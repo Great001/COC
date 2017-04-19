@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">COC</string>
+    <string name="app_name">MyQQ</string>
     <string name="slogan">海内存知己，天涯若比邻</string>
     <string name="enter_mainpage">进入首页</string>
 
@@ -13,6 +13,19 @@
     <string name="sign_in">登录</string>
     <string name="sign_out">退出登录</string>
     <string name="register">注册</string>
+    <string name="register_now">立即注册</string>
+    <string name="find_password">找回密码</string>
+
+    <string name="login_fail">登录失败</string>
+    <string name="can_not_empty">不能为空</string>
+
+    <string name="setting">设置</string>
+    <string name="night_mode">夜间</string>
+
+    <string name="add_friend">添加好友</string>
+    <string name="friend_account">添加账号</string>
+    <string name="add">添加</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

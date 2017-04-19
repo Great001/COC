@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.text.TextUtils;
 
+import com.example.liaohaicongsx.coc.model.UserModel;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.SDKOptions;
 import com.netease.nimlib.sdk.StatusBarNotificationConfig;
@@ -17,34 +18,25 @@ import com.netease.nimlib.sdk.uinfo.UserInfoProvider;
  * Created by liaohaicongsx on 2017/04/18.
  */
 public class CocApplication extends Application {
-    public static final String SP_USER = "userinfo";
+
     @Override
     public void onCreate() {
         super.onCreate();
-        NIMClient.init(getApplicationContext(),getLoginInfo(),getSDKOptions());
+
+        //获取用户的accid和token，自动登录
+        LoginInfo loginInfo = UserModel.getInstance(getApplicationContext()).getLoginInfo();
+        NIMClient.init(getApplicationContext(), loginInfo, getSDKOptions());
     }
 
-    public LoginInfo getLoginInfo(){
-        final SharedPreferences sp = getSharedPreferences(SP_USER,MODE_PRIVATE);
-        String account = sp.getString("accid",null);
-        String token = sp.getString("token",null);
-        if(!TextUtils.isEmpty(account )&&!TextUtils.isEmpty(token)){
-            sp.edit().putBoolean("loginState",true).commit();
-            return new LoginInfo(account,token);
-        }else {
-            sp.edit().putBoolean("loginState",false).commit();
-            return null;
-        }
-    }
 
-    public SDKOptions getSDKOptions(){
+    public SDKOptions getSDKOptions() {
         SDKOptions options = new SDKOptions();
         StatusBarNotificationConfig config = new StatusBarNotificationConfig();
         config.ledARGB = Color.GREEN;
         config.ledOnMs = 1000;
         config.ledOffMs = 1500;
 
-        options.userInfoProvider = new UserInfoProvider(){
+        options.userInfoProvider = new UserInfoProvider() {
             @Override
             public UserInfo getUserInfo(String account) {
                 return null;

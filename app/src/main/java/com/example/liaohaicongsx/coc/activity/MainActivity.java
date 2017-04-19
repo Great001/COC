@@ -5,8 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -17,6 +21,8 @@ import com.example.liaohaicongsx.coc.fragment.ContactsFragment;
 import com.example.liaohaicongsx.coc.fragment.DynamicFragment;
 import com.example.liaohaicongsx.coc.fragment.MessageFragment;
 import com.example.liaohaicongsx.coc.model.ResponseUser;
+import com.example.liaohaicongsx.coc.util.NavigationUtil;
+import com.example.liaohaicongsx.coc.util.ToastUtil;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -27,20 +33,26 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mVpTabs;
     private RadioGroup mRgSelectTab;
 
-    private TextView tvResult;
-
     private int currentItem;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.avatar);
+            actionBar.setTitle("");
+        }
         initView();
     }
 
     public void initView() {
-        tvResult = (TextView) findViewById(R.id.tv_content_result);
         mDlMainpage = (DrawerLayout) findViewById(R.id.dl_main_page);
         mRgSelectTab = (RadioGroup) findViewById(R.id.rg_tabs_select);
         mVpTabs = (ViewPager) findViewById(R.id.vp_main_tabs);
@@ -89,30 +101,27 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    RetrofitClient.getInstance().userRegister("six","")
-            .subscribeOn(Schedulers.io())
-            .unsubscribeOn(Schedulers.io())
-            .subscribe(new Subscriber<ResponseUser>() {
-        @Override
-        public void onCompleted() {
+        RetrofitClient.getInstance().userRegister("six", "")
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<ResponseUser>() {
+                    @Override
+                    public void onCompleted() {
 
-        }
+                    }
 
-        @Override
-        public void onError(Throwable e) {
-            e.printStackTrace();
-            Log.d("Main","errror:" +e.getMessage());
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.d("Main", "errror:" + e.getMessage());
+                    }
 
-        @Override
-        public void onNext(ResponseUser responseUser) {
+                    @Override
+                    public void onNext(ResponseUser responseUser) {
 
-            Log.d("Main",responseUser.toString());
-        }
-    });
-    }
-    public void setTvResult(String str){
-        tvResult.setText(str);
+                        Log.d("Main", responseUser.toString());
+                    }
+                });
     }
 
 
@@ -142,7 +151,28 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() {
             return 3;
         }
+
+
     };
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                mDlMainpage.openDrawer(Gravity.LEFT);
+                break;
+            case R.id.item_add_friend:
+                NavigationUtil.navigateToAddFriendActivity(this);
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
 

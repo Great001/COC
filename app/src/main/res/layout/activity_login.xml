@@ -3,20 +3,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.liaohaicongsx.coc.activity.LoginActivity">
+    tools:context="com.example.liaohaicongsx.coc.activity.LoginActivity"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:gravity="center">
 
+
+    <LinearLayout
+        android:id="@+id/ll_input_account"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/input_height"
+        android:orientation="horizontal"
+       >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/account"
+            android:gravity="center_vertical"
+            android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/et_input_account"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_input_password"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/input_height"
+        android:orientation="horizontal"
+        android:layout_below="@id/ll_input_account"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/password"
+            android:gravity="center_vertical"
+            android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/et_input_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPassword"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/sign_in"/>
+        android:layout_height="@dimen/input_height"
+        android:layout_below="@id/ll_input_password"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:text="@string/sign_in"
+        android:background="@drawable/bg_login_button"
+        />
 
-    <TextView
-        android:id="@+id/tv_loginResult"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/btn_login"
-        android:layout_marginTop="10dp"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/btn_login">
 
+        <Button
+            android:id="@+id/btn_register"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:text="@string/register"
+            android:background="@drawable/bg_btn_stroke"/>
+
+        <Button
+            android:id="@+id/btn_find_pwd"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:text="@string/find_password"
+            android:background="@drawable/bg_btn_stroke"/>
+
+    </RelativeLayout>
 </RelativeLayout>
