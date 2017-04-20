@@ -25,6 +25,9 @@
     <string name="add_friend">添加好友</string>
     <string name="friend_account">添加账号</string>
     <string name="add">添加</string>
+    <string name="add_friend_request">添加好友请求</string>
+    <string name="accept_new_friend_request">对方通过了你的好友请求</string>
+    <string name="new_friend">新的朋友</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

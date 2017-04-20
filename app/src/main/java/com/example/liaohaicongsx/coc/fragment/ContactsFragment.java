@@ -5,15 +5,36 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.liaohaicongsx.coc.R;
+import com.example.liaohaicongsx.coc.adapter.ContactsAdapter;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.friend.FriendService;
+import com.netease.nimlib.sdk.uinfo.UserService;
+import com.netease.nimlib.sdk.uinfo.model.NimUserInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ContactsFragment extends Fragment {
 
+
+
+    private ListView mLvContacts;
+    private ContactsAdapter mAdapter;
+    private List<NimUserInfo> users = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_contacts,null);
+        mLvContacts = (ListView) view.findViewById(R.id.lv_contacts);
+
+        List<String> accounts = NIMClient.getService(FriendService.class).getFriendAccounts(); // 获取所有好友帐号
+//        users = NIMClient.getService(UserService.class).getUserInfoList(accounts); // 获取所有好友用户资料
+        mAdapter = new ContactsAdapter(getContext(),users);
+        mLvContacts.setAdapter(mAdapter);
         return view;
     }
 }

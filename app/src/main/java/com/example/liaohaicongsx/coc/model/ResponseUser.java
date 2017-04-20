@@ -5,14 +5,14 @@ package com.example.liaohaicongsx.coc.model;
  */
 public class ResponseUser {
 
-    private String code;
+    private int code;
     private UserInfo info;
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
@@ -24,7 +24,7 @@ public class ResponseUser {
         this.info = info;
     }
 
-    public ResponseUser(String code, UserInfo info) {
+    public ResponseUser(int code, UserInfo info) {
         this.code = code;
         this.info = info;
     }

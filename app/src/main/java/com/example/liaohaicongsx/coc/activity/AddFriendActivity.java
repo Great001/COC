@@ -47,7 +47,8 @@ public class AddFriendActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    getUserInfos();
+                    String accid = mEtAccount.getText().toString().trim();
+                    getUserInfos(accid);
                 }
                 return false;
             }
@@ -56,8 +57,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
     }
 
-    public void getUserInfos() {
-        String accid = mEtAccount.getText().toString().trim();
+    public void getUserInfos(String accid) {
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(accid);
         RetrofitClient.getInstance().userGetInfos(jsonArray.toString())

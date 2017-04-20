@@ -21,7 +21,7 @@
             android:src="@drawable/avatar" />
 
         <TextView
-            android:id="@+id/user_nickname"
+            android:id="@+id/tv_user_nickname"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/user_avatar_size"
             android:layout_alignTop="@id/iv_user_avatar"

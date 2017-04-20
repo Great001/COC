@@ -85,7 +85,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             NIMClient.getService(AuthService.class).login(loginInfo).setCallback(new RequestCallback() {
                 @Override
                 public void onSuccess(Object param) {
-                    UserModel.getInstance(getApplicationContext()).setLoginInfo(account,password);
+                    UserModel.getInstance().setLoginInfo(getApplicationContext(),account,password);
+                    UserModel.getInstance().queryUserInfo(account);
                     NavigationUtil.navigatoMainPage(LoginActivity.this);
                     LoginActivity.this.finish();
                 }
@@ -117,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onBackPressed() {
         NavigationUtil.navigatoMainPage(LoginActivity.this);
-        UserModel.getInstance(getApplicationContext()).setLoginState(false);
+        UserModel.getInstance().setLoginState(false);
         super.onBackPressed();
     }
 }

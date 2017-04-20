@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.liaohaicongsx.coc.activity.AddFriendVefifyActivity">
+
+    <TextView
+        android:id="@+id/tv_new_friend"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:background="@color/app_gray_divider"
+        android:text="@string/new_friend"/>
+
+    <ListView
+        android:id="@+id/lv_new_friends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_new_friend"></ListView>
+</RelativeLayout>

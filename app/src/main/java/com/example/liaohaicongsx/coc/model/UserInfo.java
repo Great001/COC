@@ -5,9 +5,9 @@ package com.example.liaohaicongsx.coc.model;
  */
 public class UserInfo {
 
-    private String token;
     private String accid;
     private String name;
+    private String token;
 
     private String mobile;
     private String email;

@@ -29,7 +29,7 @@
     <application
         android:name=".CocApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/app_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -95,7 +95,20 @@
             android:value="com.netease.nimlib.service.NimReceiver" />
 
         <activity android:name=".activity.FindPwdActivity" />
-        <activity android:name=".activity.AddFriendActivity"></activity>
+        <activity android:name=".activity.AddFriendActivity" />
+        <activity android:name=".activity.AddFriendVefifyActivity">
+            <intent-filter>
+                <action android:name="com.example.liaohaicongsx.coc.addFriendVerify" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.ChatActivity">
+            <intent-filter>
+                <action android:name="com.example.liaohaicongsx.coc.chatActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

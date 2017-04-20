@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.IntentSender;
 
 import com.example.liaohaicongsx.coc.activity.AddFriendActivity;
+import com.example.liaohaicongsx.coc.activity.ChatActivity;
 import com.example.liaohaicongsx.coc.activity.FindPwdActivity;
 import com.example.liaohaicongsx.coc.activity.LoginActivity;
 import com.example.liaohaicongsx.coc.activity.MainActivity;
 import com.example.liaohaicongsx.coc.activity.RegisterActivity;
+import com.example.liaohaicongsx.coc.fragment.ContactsFragment;
 
 /**
  * Created by liaohaicongsx on 2017/04/13.
@@ -47,5 +49,12 @@ public class NavigationUtil {
         Intent intent = new Intent(context, AddFriendActivity.class);
         context.startActivity(intent);
     }
+
+    public static void navigateToChatPage(Context context,String account){
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtra(ChatActivity.ACCOUNT,account);
+        context.startActivity(intent);
+    }
+
 
 }

@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     tools:context="com.example.liaohaicongsx.coc.fragment.ContactsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <ListView
+        android:id="@+id/lv_contacts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="联系人页" />
+        android:layout_height="match_parent"></ListView>
 
 </FrameLayout>

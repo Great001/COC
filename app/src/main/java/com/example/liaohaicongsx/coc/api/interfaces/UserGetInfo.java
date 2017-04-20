@@ -18,5 +18,5 @@ public interface UserGetInfo {
 
     @FormUrlEncoded
     @POST("user/getUinfos.action")
-    Observable<ResponseUserInfos> getUserInfos(@HeaderMap()Map<String,String> headerMap, @Field("accids") String accid);
+    Observable<ResponseUserInfos> getUserInfos(@HeaderMap()Map<String,String> headerMap, @Field("accids") String accids);
 }

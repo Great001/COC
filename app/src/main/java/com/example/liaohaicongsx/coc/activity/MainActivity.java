@@ -21,6 +21,7 @@ import com.example.liaohaicongsx.coc.fragment.ContactsFragment;
 import com.example.liaohaicongsx.coc.fragment.DynamicFragment;
 import com.example.liaohaicongsx.coc.fragment.MessageFragment;
 import com.example.liaohaicongsx.coc.model.ResponseUser;
+import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
 import com.example.liaohaicongsx.coc.util.ToastUtil;
 
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDlMainpage;
     private ViewPager mVpTabs;
     private RadioGroup mRgSelectTab;
+
+    private TextView mTvNickName;
 
     private int currentItem;
 
@@ -56,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         mDlMainpage = (DrawerLayout) findViewById(R.id.dl_main_page);
         mRgSelectTab = (RadioGroup) findViewById(R.id.rg_tabs_select);
         mVpTabs = (ViewPager) findViewById(R.id.vp_main_tabs);
+
+        mTvNickName = (TextView) findViewById(R.id.tv_user_nickname);
+        mTvNickName.setText(UserModel.getInstance().getUserInfo().getName());
 
         mVpTabs.setAdapter(tabsAdapter);
         currentItem = 0;

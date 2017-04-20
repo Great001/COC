@@ -16,5 +16,5 @@ import rx.Observable;
 public interface UserRegister {
     @FormUrlEncoded
     @POST("user/create.action")
-    Observable<ResponseUser> register(@HeaderMap() Map<String, String> headMap, @Field("accid") String acccid,@Field("name") String name);
+    Observable<ResponseUser> register(@HeaderMap() Map<String, String> headMap, @Field("accid") String acccid, @Field("name") String name);
 }

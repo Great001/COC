@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
+
+    <ImageView
+        android:id="@+id/iv_new_friend_avatar"
+        android:layout_width="@dimen/user_avatar_size"
+        android:layout_height="@dimen/user_avatar_size"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/avatar"/>
+
+    <TextView
+        android:id="@+id/tv_new_friend_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_new_friend_avatar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:maxLength="10"
+        android:text="海阔天空"
+        android:textSize="20sp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tv_new_friend_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_new_friend_name"
+        android:layout_alignLeft="@id/tv_new_friend_name"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:text="发来验证请求"
+        />
+
+    <TextView
+        android:id="@+id/tv_new_friend_handle_request"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:background="@color/app_main_color"
+        android:textColor="@color/white"
+        android:text="同意"
+        android:textSize="16sp"/>
+
+</RelativeLayout>
