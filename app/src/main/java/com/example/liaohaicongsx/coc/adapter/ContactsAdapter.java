@@ -25,7 +25,7 @@ public class ContactsAdapter extends BaseAdapter {
 
     public ContactsAdapter(Context context,List<NimUserInfo> list){
         this.context = context;
-//        userInfos = list;
+        userInfos = list;
     }
 
 

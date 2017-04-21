@@ -2,13 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="80dp"
     android:padding="10dp">
 
     <ImageView
         android:id="@+id/iv_item_avatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/user_avatar_size"
+        android:layout_height="@dimen/user_avatar_size"
+        android:layout_centerVertical="true"
         android:scaleType="centerCrop"
         android:src="@drawable/avatar"/>
 
@@ -24,14 +25,13 @@
     <TextView
         android:id="@+id/tv_item_add_friend"
         android:layout_width="70dp"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:gravity="center"
         android:background="@drawable/bg_btn_stroke"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:layout_gravity="right"
         android:text="@string/add"/>
-
-
 </RelativeLayout>

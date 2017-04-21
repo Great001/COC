@@ -16,7 +16,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
 
     public static final String TAG = "RegisterActivity";
 
@@ -65,5 +65,10 @@ public class RegisterActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    @Override
+    public String getPageTitle() {
+        return getString(R.string.register_page);
     }
 }

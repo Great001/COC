@@ -11,7 +11,7 @@ import com.netease.nimlib.sdk.msg.model.SystemMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddFriendVefifyActivity extends AppCompatActivity {
+public class AddFriendVefifyActivity extends BaseActivity {
 
     private ListView mLvNewFriends;
     private NewFriendAdapter mAdapter;
@@ -31,5 +31,10 @@ public class AddFriendVefifyActivity extends AppCompatActivity {
         mLvNewFriends.setAdapter(mAdapter);
         mAdapter.setData(systemMsgs);
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public String getPageTitle() {
+        return getString(R.string.add_friend_verify_page);
     }
 }

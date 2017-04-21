@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.api.RetrofitClient;
 import com.example.liaohaicongsx.coc.fragment.ContactsFragment;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.avatar);
             actionBar.setTitle("");
         }
+        AppActivityManager.getInstance().push(this);
         initView();
     }
 

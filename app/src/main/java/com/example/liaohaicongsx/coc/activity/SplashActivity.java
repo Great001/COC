@@ -11,15 +11,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
+import com.example.liaohaicongsx.coc.util.ToastUtil;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.friend.model.AddFriendNotify;
+import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.SystemMessageObserver;
 import com.netease.nimlib.sdk.msg.constant.SystemMessageType;
+import com.netease.nimlib.sdk.msg.model.IMMessage;
 import com.netease.nimlib.sdk.msg.model.SystemMessage;
+
+import java.util.List;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -47,6 +53,7 @@ public class SplashActivity extends AppCompatActivity {
         });
 
         registerSystemMsgObserver();
+        registerImMsgObserver();
 
     }
 
@@ -63,6 +70,22 @@ public class SplashActivity extends AppCompatActivity {
                 }, true);
     }
 
+    public void registerImMsgObserver(){
+        //监听IM消息
+        Observer<List<IMMessage>> incomingMsgObserver = new Observer<List<IMMessage>>() {
+            @Override
+            public void onEvent(List<IMMessage> imMessages) {
+                if(AppActivityManager.getInstance().topActivity() instanceof  ChatActivity ){
+
+                }else {
+                  showImMsgNotification(imMessages);
+                }
+            }
+        };
+        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(incomingMsgObserver,true);
+    }
+
+
 
     public void dealWithAddFriendMsg(SystemMessage message) {
         AddFriendNotify attachData = (AddFriendNotify) message.getAttachObject();
@@ -73,7 +96,7 @@ public class SplashActivity extends AppCompatActivity {
             } else if (attachData.getEvent() == AddFriendNotify.Event.RECV_AGREE_ADD_FRIEND) {
                 // 对方通过了你的好友验证请求
                 String action = "com.example.liaohaicongsx.coc.chatActivity";
-                showNotification(R.string.accept_new_friend_request,message,action);
+                showAddFriendNotification(R.string.accept_new_friend_request,message,action);
             } else if (attachData.getEvent() == AddFriendNotify.Event.RECV_REJECT_ADD_FRIEND) {
                 // 对方拒绝了你的好友验证请求
             } else {
@@ -81,24 +104,42 @@ public class SplashActivity extends AppCompatActivity {
                     // 对方请求添加好友，一般场景会让用户选择同意或拒绝对方的好友请求。
                     // 通过message.getContent()获取好友验证请求的附言
                     String action = "com.example.liaohaicongsx.coc.addFriendVerify";
-                    showNotification(R.string.add_friend_request,message,action);
+                    showAddFriendNotification(R.string.add_friend_request,message,action);
                 }
             }
         }
     }
 
-    public void showNotification(int contentTitle,SystemMessage message,String action){
+    public void showAddFriendNotification(int contentTitle, SystemMessage message, String action){
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setSmallIcon(R.drawable.app_logo);
         builder.setContentTitle(getResources().getString(contentTitle));
         builder.setContentText(message.getContent());
         Intent intent = new Intent(action);
-        intent.putExtra("message",message);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
         nm.notify(0,builder.build());
+    }
+
+    public void showImMsgNotification(List<IMMessage> imMessages){
+        IMMessage message = imMessages.get(0);
+        String fromName = message.getFromNick();
+        String messageContent = message.getContent();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.app_logo);
+        builder.setContentTitle(getString(R.string.news_comming));
+        builder.setContentText(messageContent);
+        Intent intent  = new Intent("com.example.liaohaicongsx.coc.chatActivity");
+        intent.putExtra("message",message);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(0,builder.build());
+
     }
 
 }

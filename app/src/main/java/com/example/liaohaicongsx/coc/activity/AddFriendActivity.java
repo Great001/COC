@@ -23,7 +23,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class AddFriendActivity extends AppCompatActivity {
+public class AddFriendActivity extends BaseActivity {
 
     public static final String TAG = "AddFriendActivity";
 
@@ -55,6 +55,12 @@ public class AddFriendActivity extends AppCompatActivity {
         });
 
 
+    }
+
+
+    @Override
+    public String getPageTitle() {
+        return getString(R.string.add_friend_page);
     }
 
     public void getUserInfos(String accid) {

@@ -7,6 +7,13 @@
     <string name="contaces">联系人</string>
     <string name="dynamic">动态</string>
 
+    <string name="add_friend_page">添加好友</string>
+    <string name="chat_page">聊天</string>
+    <string name="add_friend_verify_page">好友验证</string>
+    <string name="login_page">登录</string>
+    <string name="register_page">注册</string>
+    <string name="find_pwd_page">找回密码</string>
+
     <string name="account">账号</string>
     <string name="nickname">昵称</string>
     <string name="password">密码</string>
@@ -28,6 +35,8 @@
     <string name="add_friend_request">添加好友请求</string>
     <string name="accept_new_friend_request">对方通过了你的好友请求</string>
     <string name="new_friend">新的朋友</string>
+
+    <string name="news_comming">新消息</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

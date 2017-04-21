@@ -17,7 +17,7 @@ import com.netease.nimlib.sdk.RequestCallback;
 import com.netease.nimlib.sdk.auth.AuthService;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     public static final String TAG = "LoginActivity";
 
@@ -40,6 +40,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mEtAccount.setText(getIntent().getStringExtra(KEY_ACCOUNT));
         mEtPwd.setText(getIntent().getStringExtra(KEY_PWD));
+    }
+
+
+    @Override
+    public String getPageTitle() {
+        return getString(R.string.login_page);
     }
 
     public void initView(){

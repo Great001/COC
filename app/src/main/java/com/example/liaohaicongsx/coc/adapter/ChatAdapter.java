@@ -20,8 +20,8 @@ import java.util.List;
  */
 public class ChatAdapter extends BaseAdapter {
 
-    public static final int ITEM_TYPE_IN = 1;
-    public static final int ITEM_TYPE_OUT = 2;
+    public static final int ITEM_TYPE_IN = 0;
+    public static final int ITEM_TYPE_OUT = 1;
 
     private Context context;
     private List<IMMessage> messages = new ArrayList<>();
@@ -76,6 +76,7 @@ public class ChatAdapter extends BaseAdapter {
             return ITEM_TYPE_OUT;
         }
     }
+
 
     @Override
     public int getViewTypeCount() {
