@@ -21,9 +21,11 @@ import rx.schedulers.Schedulers;
 public class UserModel {
 
     public static final String TAG = "UserModel";
+
     private volatile static UserModel instance;
 
     public static final String SP_USER = "userinfo";
+
     public static final String KEY_ACCID = "accid";
     public static final String KEY_TOKEN = "token";
     public static final String KEY_LOGIN_STATE = "loginState";
@@ -75,8 +77,9 @@ public class UserModel {
 
 
     public void queryUserInfo(String accid) {
+
         JSONArray jsonArray = new JSONArray();
-        jsonArray.put(accid);
+        jsonArray.put(accid);  //参数封装成JsonArray的格式
         RetrofitClient.getInstance().userGetInfos(jsonArray.toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -94,7 +97,7 @@ public class UserModel {
                     @Override
                     public void onNext(ResponseUserInfos responseUserInfos) {
                         mUserInfo = responseUserInfos.getUinfos().get(0);
-                        Log.d(TAG,mUserInfo.toString());
+                        Log.d(TAG, mUserInfo.toString());
                     }
                 });
 
@@ -104,9 +107,8 @@ public class UserModel {
         if (mUserInfo != null) {
             return mUserInfo;
         } else {
-            return null;
+            return new UserInfo("ff0e8e13ddf903de1b077434a28457a6", "1492596274543", "test001");  //构造假数据
         }
     }
-
 
 }

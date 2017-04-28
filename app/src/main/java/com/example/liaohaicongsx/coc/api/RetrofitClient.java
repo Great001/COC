@@ -48,15 +48,15 @@ public class RetrofitClient {
     }
 
     //用户注册
-    public Observable<ResponseUser> userRegister(String accid,String name) {
+    public Observable<ResponseUser> userRegister(String accid, String name) {
         UserRegister userRegister = retrofit.create(UserRegister.class);
-        return userRegister.register(getHeaderMap(),accid,name);
+        return userRegister.register(getHeaderMap(), accid, name);
     }
 
     //用户账户搜索
-    public Observable<ResponseUserInfos> userGetInfos(String accid){
+    public Observable<ResponseUserInfos> userGetInfos(String accid) {
         UserGetInfo uInfos = retrofit.create(UserGetInfo.class);
-        return uInfos.getUserInfos(getHeaderMap(),accid);
+        return uInfos.getUserInfos(getHeaderMap(), accid);
 
     }
 

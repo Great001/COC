@@ -30,7 +30,7 @@ import java.util.List;
 public class SplashActivity extends AppCompatActivity {
 
     private Button mBtnEnter;
-    private ImageView mIvAd;
+    private ImageView mIvAd;  //展示广告
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,8 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
 
-        registerSystemMsgObserver();
-        registerImMsgObserver();
+        registerSystemMsgObserver();   //监听系统通知
+        registerImMsgObserver();       //监听IM消息
 
     }
 
@@ -117,6 +117,7 @@ public class SplashActivity extends AppCompatActivity {
         builder.setContentTitle(getResources().getString(contentTitle));
         builder.setContentText(message.getContent());
         Intent intent = new Intent(action);
+        intent.putExtra("message",message);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
@@ -139,7 +140,6 @@ public class SplashActivity extends AppCompatActivity {
 
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(0,builder.build());
-
     }
 
 }

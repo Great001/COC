@@ -1,12 +1,23 @@
 package com.example.liaohaicongsx.coc.activity;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.ChatAdapter;
@@ -28,9 +39,12 @@ public class ChatActivity extends BaseActivity {
 
     public static final String ACCOUNT = "account";
 
+    private RelativeLayout mRlRoot;
     private ListView mLvChat;
     private EditText mEtMsg;
     private Button mBtnSend;
+
+    private ImageView mIvEmoji;
 
     private ChatAdapter mAdapter;
     private List<IMMessage> mMsgList = new ArrayList<>();
@@ -54,7 +68,6 @@ public class ChatActivity extends BaseActivity {
         queryOldMsgRecords();
         //接收消息
         observeRecvMessage();
-
     }
 
     @Override
@@ -63,9 +76,11 @@ public class ChatActivity extends BaseActivity {
     }
 
     public void initView() {
+        mRlRoot = (RelativeLayout) findViewById(R.id.rl_root);
         mLvChat = (ListView) findViewById(R.id.lv_chat);
         mEtMsg = (EditText) findViewById(R.id.et_input_message);
         mBtnSend = (Button) findViewById(R.id.btn_send_message);
+        mIvEmoji = (ImageView) findViewById(R.id.iv_msg_emoji);
 
         mEtMsg.clearFocus();
 
@@ -96,12 +111,45 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
+        mIvEmoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Html.ImageGetter imageGetter = new Html.ImageGetter() {
+                    @Override
+                    public Drawable getDrawable(String source) {
+                        Drawable drawable = getResources().getDrawable(Integer.valueOf(source));
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return drawable;
+                    }
+                };
+
+                String messageContent = Html.toHtml(mEtMsg.getText());
+                int start = messageContent.indexOf(">") + 1;
+                int end = messageContent.lastIndexOf("</p>");
+                if (end != -1) {
+                    messageContent = messageContent.substring(start, end);
+                    Log.d("ChatActivity", messageContent);
+                }
+
+                String img = "<img src='" + R.drawable.emoji + "'/>";
+                messageContent += img;
+                Spanned html = Html.fromHtml(messageContent, imageGetter, null);
+//                Log.d("ChatActivity",html.toString());
+                mEtMsg.setText(html);
+            }
+        });
+
         mBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String messageContent = mEtMsg.getText().toString();
+                Spanned messageContent = mEtMsg.getText();
+                String message = Html.toHtml(messageContent);
+                int start = message.indexOf(">") + 1;
+                int end = message.lastIndexOf("</p>");
+                message = message.substring(start, end);
+                Log.d("ChatActivity", message);
                 //发送消息
-                sendMsg(messageContent);
+                sendMsg(message);
             }
 
 
@@ -164,6 +212,19 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onException(Throwable exception) {
 
+            }
+        });
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRlRoot.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+//                InputMethodManager  im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                im.hideSoftInputFromWindow(mRlRoot.getWindowToken(),InputMethodManager.RESULT_HIDDEN);
             }
         });
     }

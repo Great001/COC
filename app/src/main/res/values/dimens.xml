@@ -15,4 +15,6 @@
     <dimen name="user_setting_width">50dp</dimen>
 
     <dimen name="user_name_size">18sp</dimen>
+
+    <dimen name="chat_msg_options_icon_size">25dp</dimen>
 </resources>

@@ -31,6 +31,8 @@
         android:layout_alignLeft="@id/tv_recent_contact_name"
         android:layout_marginTop="10dp"
         android:layout_marginRight="50dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:text="你好"/>
 

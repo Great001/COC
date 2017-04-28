@@ -32,7 +32,10 @@ public class ContactsFragment extends Fragment {
 
         List<String> accounts = NIMClient.getService(FriendService.class).getFriendAccounts(); // 获取所有好友帐号
         users = NIMClient.getService(UserService.class).getUserInfoList(accounts); // 获取所有好友用户资料
-        mAdapter = new ContactsAdapter(getContext(), users);
+        mAdapter = new ContactsAdapter(getContext());
+        if(users != null){
+            mAdapter.setUserInfos(users);
+        }
         mLvContacts.setAdapter(mAdapter);
         return view;
     }

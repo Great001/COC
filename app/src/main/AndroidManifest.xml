@@ -90,12 +90,14 @@
         <meta-data
             android:name="com.netease.cosine.target"
             android:value="" />
+
         <meta-data
             android:name="com.netease.cosine.target.receiver"
             android:value="com.netease.nimlib.service.NimReceiver" />
 
         <activity android:name=".activity.FindPwdActivity" />
         <activity android:name=".activity.AddFriendActivity" />
+
         <activity android:name=".activity.AddFriendVefifyActivity">
             <intent-filter>
                 <action android:name="com.example.liaohaicongsx.coc.addFriendVerify" />
@@ -103,13 +105,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity android:name=".activity.ChatActivity">
             <intent-filter>
                 <action android:name="com.example.liaohaicongsx.coc.chatActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
+        </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for-->
+
     </application>
 
 </manifest>

@@ -81,5 +81,4 @@ public class CocApplication extends Application {
         return options;
     }
 
-
 }

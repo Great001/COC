@@ -1,6 +1,8 @@
 package com.example.liaohaicongsx.coc.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +66,15 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ChatViewHolder) convertView.getTag();
         }
         IMMessage message = messages.get(position);
-        holder.tvMsg.setText(message.getContent());
+        Html.ImageGetter imageGetter = new Html.ImageGetter() {
+            @Override
+            public Drawable getDrawable(String source) {
+                Drawable drawable = context.getResources().getDrawable(Integer.valueOf(source));
+                drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
+                return drawable;
+            }
+        };
+        holder.tvMsg.setText(Html.fromHtml(message.getContent(), imageGetter, null));
         return convertView;
     }
 
