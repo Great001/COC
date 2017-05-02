@@ -34,6 +34,11 @@ public class AppActivityManager {
         }
     }
 
+    public void pop(){
+        stack.pop();
+    }
+
+
     public void remove(Activity activity) {
        for(SoftReference<Activity> ref : stack){
            if(ref != null && ref.get() == activity){

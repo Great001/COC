@@ -27,7 +27,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AppActivityManager.getInstance().remove(this);
+        AppActivityManager.getInstance().pop();
         super.onBackPressed();
     }
 

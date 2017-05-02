@@ -1,43 +1,54 @@
 package com.example.liaohaicongsx.coc.activity;
 
 import android.content.Context;
-import android.content.res.Configuration;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.ChatAdapter;
+import com.example.liaohaicongsx.coc.util.ToastUtil;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.RequestCallback;
+import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.msg.MessageBuilder;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 import com.netease.nimlib.sdk.msg.model.QueryDirectionEnum;
-import com.netease.nimlib.sdk.msg.model.SystemMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends AppCompatActivity {
 
     public static final String ACCOUNT = "account";
+    public static final String NICK = "nick";
+
+    public static final int HIDE_WINDOW = 1;
 
     private RelativeLayout mRlRoot;
     private ListView mLvChat;
@@ -50,30 +61,55 @@ public class ChatActivity extends BaseActivity {
     private List<IMMessage> mMsgList = new ArrayList<>();
 
     private String account;
+    private String nick;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case HIDE_WINDOW:
+                    hideWindow();
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    private TextView textView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        IMMessage message = (IMMessage) getIntent().getSerializableExtra("message");
-        if (message != null) {
-            account = message.getFromAccount();
-            mMsgList.add(message);
-        } else {
-            account = getIntent().getStringExtra(ACCOUNT);
+
+        account = getIntent().getStringExtra(ACCOUNT);
+        nick = getIntent().getStringExtra(NICK);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setTitle(nick);
         }
 
+        AppActivityManager.getInstance().push(this);
+
         initView();
-        //查询历史纪录
-        queryOldMsgRecords();
-        //接收消息
-        observeRecvMessage();
+
+        textView = new TextView(ChatActivity.this);
+        textView.setBackgroundColor(getResources().getColor(R.color.white));
+        textView.setText("发送成功");
+        textView.setTextColor(getResources().getColor(R.color.black));
+        textView.setGravity(Gravity.CENTER);
+
+        queryOldMsgRecords();    //查询历史纪录
+        observeRecvMessage();    //接收消息
     }
 
-    @Override
-    public String getPageTitle() {
-        return getString(R.string.chat_page);
-    }
 
     public void initView() {
         mRlRoot = (RelativeLayout) findViewById(R.id.rl_root);
@@ -81,8 +117,6 @@ public class ChatActivity extends BaseActivity {
         mEtMsg = (EditText) findViewById(R.id.et_input_message);
         mBtnSend = (Button) findViewById(R.id.btn_send_message);
         mIvEmoji = (ImageView) findViewById(R.id.iv_msg_emoji);
-
-        mEtMsg.clearFocus();
 
         mAdapter = new ChatAdapter(this);
         mAdapter.setMessages(mMsgList);
@@ -131,10 +165,9 @@ public class ChatActivity extends BaseActivity {
                     Log.d("ChatActivity", messageContent);
                 }
 
-                String img = "<img src='" + R.drawable.emoji + "'/>";
-                messageContent += img;
+                String emoji = "<img src='" + R.drawable.emoji + "'/>";
+                messageContent += emoji;
                 Spanned html = Html.fromHtml(messageContent, imageGetter, null);
-//                Log.d("ChatActivity",html.toString());
                 mEtMsg.setText(html);
             }
         });
@@ -146,10 +179,12 @@ public class ChatActivity extends BaseActivity {
                 String message = Html.toHtml(messageContent);
                 int start = message.indexOf(">") + 1;
                 int end = message.lastIndexOf("</p>");
-                message = message.substring(start, end);
-                Log.d("ChatActivity", message);
-                //发送消息
-                sendMsg(message);
+                if (end != -1) {
+                    message = message.substring(start, end);
+                    Log.d("ChatActivity", message);
+                    //发送消息
+                    sendMsg(message);
+                }
             }
 
 
@@ -162,14 +197,19 @@ public class ChatActivity extends BaseActivity {
                 NIMClient.getService(MsgService.class).sendMessage(message, true).setCallback(new RequestCallback<Void>() {
                     @Override
                     public void onSuccess(Void param) {
+                        //悬浮窗实现
+//                       showWindow();
+                        showNotifyWindow();
                     }
 
                     @Override
                     public void onFailed(int code) {
+                        ToastUtil.show(ChatActivity.this, "发送失败");
                     }
 
                     @Override
                     public void onException(Throwable exception) {
+                        exception.printStackTrace();
 
                     }
                 });
@@ -195,23 +235,13 @@ public class ChatActivity extends BaseActivity {
 
     public void queryOldMsgRecords() {
         IMMessage emptyMsg = MessageBuilder.createEmptyMessage(account, SessionTypeEnum.P2P, System.currentTimeMillis());
-        NIMClient.getService(MsgService.class).queryMessageListEx(emptyMsg, QueryDirectionEnum.QUERY_OLD, 50, true).setCallback(new RequestCallback<List<IMMessage>>() {
+        NIMClient.getService(MsgService.class).queryMessageListEx(emptyMsg, QueryDirectionEnum.QUERY_OLD, 50, true).setCallback(new RequestCallbackWrapper<List<IMMessage>>() {
             @Override
-            public void onSuccess(List<IMMessage> param) {
-                mMsgList.addAll(0, param);
+            public void onResult(int code, List<IMMessage> result, Throwable exception) {
+                mMsgList.addAll(0, result);
                 mAdapter.setMessages(mMsgList);
                 mAdapter.notifyDataSetChanged();
                 mLvChat.setSelection(mAdapter.getCount() - 1);
-            }
-
-            @Override
-            public void onFailed(int code) {
-
-            }
-
-            @Override
-            public void onException(Throwable exception) {
-
             }
         });
     }
@@ -228,6 +258,71 @@ public class ChatActivity extends BaseActivity {
             }
         });
     }
+
+
+    @Override
+    public void onBackPressed() {
+        AppActivityManager.getInstance().pop();
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void showWindow(){
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = 150;
+        params.gravity = Gravity.TOP | Gravity.LEFT;
+        params.x = 0;
+        params.y = 0;
+        wm.addView(textView,params);
+        handler.sendEmptyMessageDelayed(HIDE_WINDOW,3000);
+    }
+
+
+    public void hideWindow(){
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        wm.removeView(textView);
+    }
+
+    public void showNotifyWindow(){
+
+        final WindowManager windowManager = getWindowManager();
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.gravity = Gravity.TOP | Gravity.LEFT;
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        params.format = PixelFormat.RGBA_8888;
+        params.y = 0;
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        final View view = LayoutInflater.from(this).inflate(R.layout.notifyview,null);
+        windowManager.addView(view,params);
+
+        android.os.Handler handler = new android.os.Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                windowManager.removeView(view);
+            }
+        },3000);
+    }
+
 
 
 }

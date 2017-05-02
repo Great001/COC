@@ -18,6 +18,7 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:text="@string/slogan"
+        android:textStyle="bold"
         android:textSize="20sp"
         />
 

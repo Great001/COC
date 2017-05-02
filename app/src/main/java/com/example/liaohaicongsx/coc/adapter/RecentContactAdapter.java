@@ -62,16 +62,14 @@ public class RecentContactAdapter extends BaseAdapter {
             holder = (RecentContactViewHolder) convertView.getTag();
         }
         final RecentContact recentContact = recentContacts.get(position);
-        String name = recentContact.getFromNick();
+        final String name = TextUtils.isEmpty(recentContact.getFromNick())?"test":recentContact.getFromNick();
         final String account = recentContact.getFromAccount();
         String msg = recentContact.getContent();
         int unReadCount = recentContact.getUnreadCount();
         Date date = new Date(recentContact.getTime());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
         String time = simpleDateFormat.format(date);
-        if(TextUtils.isEmpty(name)){
-            name = "test";
-        }
+
         holder.tvName.setText(name);
         holder.tvMsg.setText(Html.fromHtml(msg, new Html.ImageGetter() {
             @Override
@@ -98,7 +96,7 @@ public class RecentContactAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                v.findViewById(R.id.tv_recent_unread_count).setVisibility(View.GONE);
-                NavigationUtil.navigateToChatPage(context,account);
+                NavigationUtil.navigateToChatPage(context,account,name);
             }
         });
         return convertView;

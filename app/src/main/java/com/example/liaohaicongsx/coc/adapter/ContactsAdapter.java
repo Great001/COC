@@ -1,6 +1,7 @@
 package com.example.liaohaicongsx.coc.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,10 +64,16 @@ public class ContactsAdapter extends BaseAdapter {
             holder = (ContactViewHolder) convertView.getTag();
         }
         final NimUserInfo user = userInfos.get(position);
+        final String account = user.getAccount();
+        final String name = user.getName();
+        String signature = user.getSignature();
+
+        holder.tvName.setText(TextUtils.isEmpty(name) ? "海阔天空" : name);
+        holder.tvSign.setText(TextUtils.isEmpty(signature)?"海阔凭鱼跃，天高任鸟飞":signature);
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavigationUtil.navigateToChatPage(context,user.getAccount());
+                NavigationUtil.navigateToChatPage(context,account,name);
             }
         });
         return convertView;

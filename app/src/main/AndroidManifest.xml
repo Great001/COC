@@ -19,6 +19,9 @@
     <!-- 多媒体相关 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!--窗口相关-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
     <!-- IM云SDK相关权限 -->
     <permission
         android:name="com.example.liaohaicongsx.coc.permission.RECEIVE_MSG"
@@ -112,7 +115,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for-->
+        </activity>
 
     </application>
 
