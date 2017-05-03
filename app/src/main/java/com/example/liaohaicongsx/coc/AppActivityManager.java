@@ -48,6 +48,13 @@ public class AppActivityManager {
     }
 
     public Activity topActivity(){
+        while(!stack.isEmpty()){
+            if(stack.peek()!=null && stack.peek().get()!= null){
+                break;
+            }else{
+                stack.pop();
+            }
+        }
         return stack.peek().get();
     }
 

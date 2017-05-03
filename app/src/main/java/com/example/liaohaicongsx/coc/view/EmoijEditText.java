@@ -10,7 +10,6 @@ import android.widget.EditText;
  */
 public class EmoijEditText extends EditText {
 
-
     public EmoijEditText(Context context) {
         this(context,null);
     }
@@ -26,6 +25,5 @@ public class EmoijEditText extends EditText {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
     }
 }

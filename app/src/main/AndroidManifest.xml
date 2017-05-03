@@ -109,14 +109,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.ChatActivity">
+        <activity android:name=".activity.ChatActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.example.liaohaicongsx.coc.chatActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

@@ -1,34 +1,40 @@
 package com.example.liaohaicongsx.coc;
 
+import android.app.Activity;
 import android.app.Application;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 
-import com.example.liaohaicongsx.coc.activity.AddFriendVefifyActivity;
+import com.example.liaohaicongsx.coc.activity.ChatActivity;
 import com.example.liaohaicongsx.coc.model.UserModel;
+import com.example.liaohaicongsx.coc.util.SystemUtil;
+import com.example.liaohaicongsx.coc.view.NotifyFloatingView;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.SDKOptions;
-import com.netease.nimlib.sdk.StatusBarNotificationConfig;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.friend.model.AddFriendNotify;
+import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.SystemMessageObserver;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.constant.SystemMessageType;
+import com.netease.nimlib.sdk.msg.model.IMMessage;
 import com.netease.nimlib.sdk.msg.model.SystemMessage;
 import com.netease.nimlib.sdk.uinfo.UserInfoProvider;
+
+import java.util.List;
 
 /**
  * Created by liaohaicongsx on 2017/04/18.
  */
 public class CocApplication extends Application {
 
+    private NotifyFloatingView notifyFloatingView;  //消息通知悬浮窗
 
     @Override
     public void onCreate() {
@@ -42,15 +48,21 @@ public class CocApplication extends Application {
         if (loginInfo != null) {
             UserModel.getInstance().queryUserInfo(loginInfo.getAccount());
         }
+
+        //等待主进程，进行监听服务注册
+        if (inMainProcess(this)) {
+            notifyFloatingView = new NotifyFloatingView(this);
+            registerSystemMsgObserver();   //监听系统通知
+            registerImMsgObserver();       //监听IM消息
+        }
     }
 
 
     public SDKOptions getSDKOptions() {
         SDKOptions options = new SDKOptions();
-        StatusBarNotificationConfig config = new StatusBarNotificationConfig();
-        config.ledARGB = Color.GREEN;
-        config.ledOnMs = 1000;
-        config.ledOffMs = 1500;
+
+        String sdkPath = Environment.getExternalStorageDirectory() + "/" + getPackageName() + "/nim";
+        options.sdkStorageRootPath = sdkPath;
 
         options.userInfoProvider = new UserInfoProvider() {
             @Override
@@ -81,4 +93,114 @@ public class CocApplication extends Application {
         return options;
     }
 
+
+    public void registerSystemMsgObserver() {
+        //监听系统消息
+        NIMClient.getService(SystemMessageObserver.class)
+                .observeReceiveSystemMsg(new Observer<SystemMessage>() {
+                    @Override
+                    public void onEvent(SystemMessage message) {
+                        if (message.getType() == SystemMessageType.AddFriend) {
+                            dealWithAddFriendMsg(message);
+                        }
+                    }
+                }, true);
+    }
+
+    public void registerImMsgObserver() {
+        //监听IM消息
+        Observer<List<IMMessage>> incomingMsgObserver = new Observer<List<IMMessage>>() {
+            @Override
+            public void onEvent(List<IMMessage> imMessages) {
+                Activity topActivity = AppActivityManager.getInstance().topActivity();
+                if (topActivity instanceof ChatActivity && ((ChatActivity) topActivity).isForground()) {
+                    //当前已经是聊天页面，不弹出新消息通知
+                } else {
+                    showImMsgNotification(imMessages);
+                    showNotifyWindow(imMessages.get(0));
+                }
+            }
+        };
+        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(incomingMsgObserver, true);
+    }
+
+
+    public void dealWithAddFriendMsg(SystemMessage message) {
+        AddFriendNotify attachData = (AddFriendNotify) message.getAttachObject();
+        if (attachData != null) {
+            // 针对不同的事件做处理
+            if (attachData.getEvent() == AddFriendNotify.Event.RECV_AGREE_ADD_FRIEND) {
+                // 对方通过了你的好友验证请求
+                String action = "com.example.liaohaicongsx.coc.chatActivity";
+                showAddFriendNotification(R.string.accept_new_friend_request, message, action);
+            } else if (attachData.getEvent() == AddFriendNotify.Event.RECV_REJECT_ADD_FRIEND) {
+                // 对方拒绝了你的好友验证请求
+            } else {
+                if (attachData.getEvent() == AddFriendNotify.Event.RECV_ADD_FRIEND_VERIFY_REQUEST) {
+                    // 对方请求添加好友，一般场景会让用户选择同意或拒绝对方的好友请求。
+                    String action = "com.example.liaohaicongsx.coc.addFriendVerify";
+                    showAddFriendNotification(R.string.add_friend_request, message, action);
+                }
+            }
+        }
+    }
+
+    public void showAddFriendNotification(int contentTitle, SystemMessage message, String action) {
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.app_logo);
+        builder.setContentTitle(getResources().getString(contentTitle));
+        builder.setContentText(message.getContent());
+        Intent intent = new Intent(action);
+        intent.putExtra(ChatActivity.ACCOUNT, message.getFromAccount());
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+
+        nm.notify(0, builder.build());
+    }
+
+    public void showImMsgNotification(List<IMMessage> imMessages) {
+        IMMessage message = imMessages.get(0);
+        String fromAccount = message.getFromAccount();
+        String fromNick = message.getFromNick();
+        String messageContent = message.getContent();
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.app_logo);
+        builder.setContentTitle(getString(R.string.news_comming));
+        builder.setContentText(messageContent);
+        Intent intent = new Intent("com.example.liaohaicongsx.coc.chatActivity");
+        intent.putExtra(ChatActivity.NICK, fromNick);
+        intent.putExtra(ChatActivity.ACCOUNT, fromAccount);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(0, builder.build());
+    }
+
+    public void showNotifyWindow(final IMMessage msg) {
+        if (notifyFloatingView != null) {
+            notifyFloatingView.setOnNotifyClickListener(new NotifyFloatingView.OnNotifyClickListener() {
+                @Override
+                public void onNotifyClick() {
+                    Intent intent = new Intent("com.example.liaohaicongsx.coc.chatActivity");
+                    intent.putExtra(ChatActivity.ACCOUNT, msg.getFromAccount());
+                    intent.putExtra(ChatActivity.NICK, msg.getFromNick());
+                    AppActivityManager.getInstance().topActivity().startActivity(intent);
+                }
+            });
+            notifyFloatingView.show(msg);
+        }
+    }
+
+
+    public boolean inMainProcess(Context context) {
+        String packageName = context.getPackageName();
+        String processName = SystemUtil.getProcessName(context);
+        return packageName.equals(processName);
+    }
 }

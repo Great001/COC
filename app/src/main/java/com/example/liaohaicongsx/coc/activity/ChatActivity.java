@@ -1,11 +1,7 @@
 package com.example.liaohaicongsx.coc.activity;
 
-import android.content.Context;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -13,22 +9,19 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.ChatAdapter;
 import com.example.liaohaicongsx.coc.util.ToastUtil;
+import com.example.liaohaicongsx.coc.view.NotifyFloatingView;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.RequestCallback;
@@ -48,8 +41,6 @@ public class ChatActivity extends AppCompatActivity {
     public static final String ACCOUNT = "account";
     public static final String NICK = "nick";
 
-    public static final int HIDE_WINDOW = 1;
-
     private RelativeLayout mRlRoot;
     private ListView mLvChat;
     private EditText mEtMsg;
@@ -63,23 +54,8 @@ public class ChatActivity extends AppCompatActivity {
     private String account;
     private String nick;
 
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case HIDE_WINDOW:
-                    hideWindow();
-                    break;
-                default:
-                    break;
-            }
-            super.handleMessage(msg);
-        }
-    };
-
-    private TextView textView;
-
-
+    private boolean isForground;
+    private NotifyFloatingView notifyFloatingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +76,11 @@ public class ChatActivity extends AppCompatActivity {
 
         initView();
 
-        textView = new TextView(ChatActivity.this);
-        textView.setBackgroundColor(getResources().getColor(R.color.white));
-        textView.setText("发送成功");
-        textView.setTextColor(getResources().getColor(R.color.black));
-        textView.setGravity(Gravity.CENTER);
 
         queryOldMsgRecords();    //查询历史纪录
         observeRecvMessage();    //接收消息
+
+        notifyFloatingView = new NotifyFloatingView(this);
     }
 
 
@@ -189,17 +162,15 @@ public class ChatActivity extends AppCompatActivity {
 
 
             public void sendMsg(String msg) {
-                IMMessage message = MessageBuilder.createTextMessage(account, SessionTypeEnum.P2P, msg);
+                final IMMessage message = MessageBuilder.createTextMessage(account, SessionTypeEnum.P2P, msg);
                 mMsgList.add(message);
                 mAdapter.setMessages(mMsgList);
                 mAdapter.notifyDataSetChanged();
                 mEtMsg.setText("");
+//                showNotifyWindow(message);
                 NIMClient.getService(MsgService.class).sendMessage(message, true).setCallback(new RequestCallback<Void>() {
                     @Override
                     public void onSuccess(Void param) {
-                        //悬浮窗实现
-//                       showWindow();
-                        showNotifyWindow();
                     }
 
                     @Override
@@ -250,6 +221,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setForground(true);
         mRlRoot.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -278,51 +250,25 @@ public class ChatActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showWindow(){
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = 150;
-        params.gravity = Gravity.TOP | Gravity.LEFT;
-        params.x = 0;
-        params.y = 0;
-        wm.addView(textView,params);
-        handler.sendEmptyMessageDelayed(HIDE_WINDOW,3000);
+    public void showNotifyWindow(IMMessage msg) {
+        if (notifyFloatingView != null) {
+            notifyFloatingView.show(msg);
+        }
     }
 
 
-    public void hideWindow(){
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        wm.removeView(textView);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        setForground(false);
     }
 
-    public void showNotifyWindow(){
-
-        final WindowManager windowManager = getWindowManager();
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.gravity = Gravity.TOP | Gravity.LEFT;
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-        params.format = PixelFormat.RGBA_8888;
-        params.y = 0;
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        final View view = LayoutInflater.from(this).inflate(R.layout.notifyview,null);
-        windowManager.addView(view,params);
-
-        android.os.Handler handler = new android.os.Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                windowManager.removeView(view);
-            }
-        },3000);
+    public boolean isForground() {
+        return isForground;
     }
 
-
-
+    public void setForground(boolean forground) {
+        isForground = forground;
+    }
 }
