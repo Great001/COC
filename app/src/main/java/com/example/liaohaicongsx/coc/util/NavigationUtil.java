@@ -15,43 +15,43 @@ import com.example.liaohaicongsx.coc.activity.RegisterActivity;
  */
 public class NavigationUtil {
 
-    public static void navigatoMainPage(Context context){
+    public static void navigateToMainPage(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }
 
-    public static void navigateToLoginPage(Context context){
+    public static void navigateToLoginPage(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
     }
 
-    public static void navigateToLoginPage(Context context,String accid,String token){
-        Intent intent = new Intent(context,LoginActivity.class);
-        intent.putExtra(LoginActivity.KEY_ACCOUNT,accid);
-        intent.putExtra(LoginActivity.KEY_PWD,token);
+    public static void navigateToLoginPage(Context context, String accid, String token) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra(LoginActivity.KEY_ACCOUNT, accid);
+        intent.putExtra(LoginActivity.KEY_PWD, token);
         context.startActivity(intent);
     }
 
 
-    public static void navigateToRegisterPage(Context context){
+    public static void navigateToRegisterPage(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
         context.startActivity(intent);
     }
 
-    public static void navigateToFindPwdActivity(Context context){
+    public static void navigateToFindPwdActivity(Context context) {
         Intent intent = new Intent(context, FindPwdActivity.class);
         context.startActivity(intent);
     }
 
-    public static void navigateToAddFriendActivity(Context context){
+    public static void navigateToAddFriendActivity(Context context) {
         Intent intent = new Intent(context, AddFriendActivity.class);
         context.startActivity(intent);
     }
 
-    public static void navigateToChatPage(Context context,String account,String nick){
+    public static void navigateToChatPage(Context context, String account, String nick) {
         Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra(ChatActivity.ACCOUNT,account);
-        intent.putExtra(ChatActivity.NICK,nick);
+        intent.putExtra(ChatActivity.ACCOUNT, account);
+        intent.putExtra(ChatActivity.NICK, nick);
         context.startActivity(intent);
     }
 

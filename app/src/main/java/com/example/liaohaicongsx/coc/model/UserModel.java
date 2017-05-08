@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.liaohaicongsx.coc.api.RetrofitClient;
-import com.example.liaohaicongsx.coc.util.ToastUtil;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 
 import org.json.JSONArray;
@@ -47,11 +46,11 @@ public class UserModel {
         String account = sp.getString(KEY_ACCID, null);
         String token = sp.getString(KEY_TOKEN, null);
         if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(token)) {
-            sp.edit().putBoolean(KEY_LOGIN_STATE, true).commit();
+            sp.edit().putBoolean(KEY_LOGIN_STATE, true).apply();
             setLoginState(true);
             return new LoginInfo(account, token);
         } else {
-            sp.edit().putBoolean(KEY_LOGIN_STATE, false).commit();
+            sp.edit().putBoolean(KEY_LOGIN_STATE, false).apply();
             setLoginState(false);
             return null;
         }
@@ -63,7 +62,7 @@ public class UserModel {
         editor.putString(KEY_ACCID, account);
         editor.putString(KEY_TOKEN, token);
         editor.putBoolean(KEY_LOGIN_STATE, true);
-        editor.commit();
+        editor.apply();
         setLoginState(true);
     }
 
@@ -75,9 +74,7 @@ public class UserModel {
         this.mLoginState = mLoginState;
     }
 
-
     public void queryUserInfo(String accid) {
-
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(accid);  //参数封装成JsonArray的格式
         RetrofitClient.getInstance().userGetInfos(jsonArray.toString())

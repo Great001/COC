@@ -24,22 +24,18 @@ import com.example.liaohaicongsx.coc.fragment.MessageFragment;
 import com.example.liaohaicongsx.coc.model.ResponseUser;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
-import com.example.liaohaicongsx.coc.util.ToastUtil;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout mDlMainpage;
+    private DrawerLayout mDlMainPage;
     private ViewPager mVpTabs;
     private RadioGroup mRgSelectTab;
-
     private TextView mTvNickName;
 
-    private int currentItem;
-
-
+    private int mCurrentItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.avatar);
@@ -58,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initView() {
-        mDlMainpage = (DrawerLayout) findViewById(R.id.dl_main_page);
+        mDlMainPage = (DrawerLayout) findViewById(R.id.dl_main_page);
         mRgSelectTab = (RadioGroup) findViewById(R.id.rg_tabs_select);
         mVpTabs = (ViewPager) findViewById(R.id.vp_main_tabs);
 
@@ -66,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
         mTvNickName.setText(UserModel.getInstance().getUserInfo().getName());
 
         mVpTabs.setAdapter(tabsAdapter);
-        currentItem = 0;
-        mVpTabs.setCurrentItem(currentItem);
-        ((RadioButton) mRgSelectTab.getChildAt(currentItem)).setTextColor(getResources().getColor(R.color.colorPrimary));
+        mCurrentItem = 0;
+        mVpTabs.setCurrentItem(mCurrentItem);
+        ((RadioButton) mRgSelectTab.getChildAt(mCurrentItem)).setTextColor(getResources().getColor(R.color.colorPrimary));
         mVpTabs.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -78,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
 
-                ((RadioButton) mRgSelectTab.getChildAt(currentItem)).setTextColor(getResources().getColor(R.color.black));
+                ((RadioButton) mRgSelectTab.getChildAt(mCurrentItem)).setTextColor(getResources().getColor(R.color.black));
                 ((RadioButton) mRgSelectTab.getChildAt(position)).setTextColor(getResources().getColor(R.color.colorPrimary));
-                currentItem = position;
+                mCurrentItem = position;
 
             }
 
@@ -121,17 +117,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        Log.d("Main", "errror:" + e.getMessage());
+                        Log.d("Main", "error:" + e.getMessage());
                     }
 
                     @Override
                     public void onNext(ResponseUser responseUser) {
-
                         Log.d("Main", responseUser.toString());
                     }
                 });
     }
-
 
 
     FragmentPagerAdapter tabsAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -165,18 +159,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main,menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
-                mDlMainpage.openDrawer(Gravity.LEFT);
+                mDlMainPage.openDrawer(Gravity.LEFT);
                 break;
             case R.id.item_add_friend:
                 NavigationUtil.navigateToAddFriendActivity(this);
+                break;
             default:
                 break;
         }

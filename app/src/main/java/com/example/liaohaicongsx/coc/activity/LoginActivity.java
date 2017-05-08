@@ -1,7 +1,6 @@
 package com.example.liaohaicongsx.coc.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,7 @@ import com.netease.nimlib.sdk.RequestCallback;
 import com.netease.nimlib.sdk.auth.AuthService;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     public static final String TAG = "LoginActivity";
 
@@ -48,7 +47,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         return getString(R.string.login_page);
     }
 
-    public void initView(){
+    public void initView() {
         mBtnLogin = (Button) findViewById(R.id.btn_login);
         mBtnRegister = (Button) findViewById(R.id.btn_register);
         mBtnFindPwd = (Button) findViewById(R.id.btn_find_pwd);
@@ -63,7 +62,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_login:
                 onLoginClick();
                 break;
@@ -75,55 +74,54 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             default:
                 break;
-
         }
-
     }
 
-    public void onLoginClick(){
+    public void onLoginClick() {
         final String account = mEtAccount.getText().toString().trim();
         final String password = mEtPwd.getText().toString().trim();
 
-        Log.d(TAG,"accout:" + account +"  token:"+password);
+        Log.d(TAG, "accout:" + account + "  token:" + password);
 
-        if(!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)){
-            LoginInfo loginInfo = new LoginInfo(account,password);
+        if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
+            LoginInfo loginInfo = new LoginInfo(account, password);
             NIMClient.getService(AuthService.class).login(loginInfo).setCallback(new RequestCallback() {
                 @Override
                 public void onSuccess(Object param) {
-                    UserModel.getInstance().setLoginInfo(getApplicationContext(),account,password);
+                    UserModel.getInstance().setLoginInfo(getApplicationContext(), account, password);
                     UserModel.getInstance().queryUserInfo(account);
-                    NavigationUtil.navigatoMainPage(LoginActivity.this);
+                    NavigationUtil.navigateToMainPage(LoginActivity.this);
                     LoginActivity.this.finish();
                 }
 
                 @Override
                 public void onFailed(int code) {
-                    ToastUtil.show(LoginActivity.this,R.string.login_fail);
+                    ToastUtil.show(LoginActivity.this, R.string.login_fail);
                 }
 
                 @Override
                 public void onException(Throwable exception) {
+                    // TODO: 17/5/8 用户提示
                     exception.printStackTrace();
                 }
             });
-        }else{
-            ToastUtil.show(this,R.string.can_not_empty);
+        } else {
+            ToastUtil.show(this, R.string.can_not_empty);
         }
     }
 
-    public void onRegisterClick(){
+    public void onRegisterClick() {
         NavigationUtil.navigateToRegisterPage(this);
         LoginActivity.this.finish();
     }
 
-    public void onFindPwdClick(){
+    public void onFindPwdClick() {
         NavigationUtil.navigateToFindPwdActivity(this);
     }
 
     @Override
     public void onBackPressed() {
-        NavigationUtil.navigatoMainPage(LoginActivity.this);
+        NavigationUtil.navigateToMainPage(LoginActivity.this);
         UserModel.getInstance().setLoginState(false);
         super.onBackPressed();
     }

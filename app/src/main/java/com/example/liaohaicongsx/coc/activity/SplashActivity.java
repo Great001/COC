@@ -12,9 +12,14 @@ import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
 
 public class SplashActivity extends AppCompatActivity {
-
-    private Button mBtnEnter;   //进入首页按钮
-    private ImageView mIvAd;  //展示广告
+    /**
+     * 进入首页按钮
+     */
+    private Button mBtnEnter;
+    /**
+     * 展示广告
+     */
+    private ImageView mIvAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +35,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (UserModel.getInstance().getLoginState()) {
-                    NavigationUtil.navigatoMainPage(SplashActivity.this);
+                    NavigationUtil.navigateToMainPage(SplashActivity.this);
                 } else {
                     NavigationUtil.navigateToLoginPage(SplashActivity.this);
                 }
