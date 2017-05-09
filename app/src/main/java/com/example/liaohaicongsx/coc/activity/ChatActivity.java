@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.ChatAdapter;
+import com.example.liaohaicongsx.coc.util.NavigationUtil;
 import com.example.liaohaicongsx.coc.util.ToastUtil;
 import com.example.liaohaicongsx.coc.view.NotifyFloatingView;
 import com.netease.nimlib.sdk.NIMClient;
@@ -36,7 +37,7 @@ import com.netease.nimlib.sdk.msg.model.QueryDirectionEnum;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String ACCOUNT = "account";
     public static final String NICK = "nick";
@@ -47,6 +48,7 @@ public class ChatActivity extends AppCompatActivity {
     private Button mBtnSend;
 
     private ImageView mIvEmoji;
+    private ImageView mIvMusic;
 
     private ChatAdapter mAdapter;
     private List<IMMessage> mMsgList = new ArrayList<>();
@@ -90,6 +92,10 @@ public class ChatActivity extends AppCompatActivity {
         mEtMsg = (EditText) findViewById(R.id.et_input_message);
         mBtnSend = (Button) findViewById(R.id.btn_send_message);
         mIvEmoji = (ImageView) findViewById(R.id.iv_msg_emoji);
+        mIvMusic = (ImageView) findViewById(R.id.iv_msg_music);
+
+        mIvEmoji.setOnClickListener(this);
+        mIvMusic.setOnClickListener(this);
 
         mAdapter = new ChatAdapter(this);
         mAdapter.setMessages(mMsgList);
@@ -115,33 +121,6 @@ public class ChatActivity extends AppCompatActivity {
                     mBtnSend.setClickable(false);
                     mBtnSend.setBackgroundResource(R.drawable.bg_btn_chat_send_not);
                 }
-            }
-        });
-
-        mIvEmoji.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Html.ImageGetter imageGetter = new Html.ImageGetter() {
-                    @Override
-                    public Drawable getDrawable(String source) {
-                        Drawable drawable = getResources().getDrawable(Integer.valueOf(source));
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                        return drawable;
-                    }
-                };
-
-                String messageContent = Html.toHtml(mEtMsg.getText());
-                int start = messageContent.indexOf(">") + 1;
-                int end = messageContent.lastIndexOf("</p>");
-                if (end != -1) {
-                    messageContent = messageContent.substring(start, end);
-                    Log.d("ChatActivity", messageContent);
-                }
-
-                String emoji = "<img src='" + R.drawable.emoji + "'/>";
-                messageContent += emoji;
-                Spanned html = Html.fromHtml(messageContent, imageGetter, null);
-                mEtMsg.setText(html);
             }
         });
 
@@ -271,4 +250,48 @@ public class ChatActivity extends AppCompatActivity {
     public void setForground(boolean forground) {
         isForground = forground;
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_msg_emoji:
+                onEmojiClick();
+                break;
+            case R.id.iv_msg_music:
+                onMusicClick();
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    public void onEmojiClick() {
+        Html.ImageGetter imageGetter = new Html.ImageGetter() {
+            @Override
+            public Drawable getDrawable(String source) {
+                Drawable drawable = getResources().getDrawable(Integer.valueOf(source));
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                return drawable;
+            }
+        };
+
+        String messageContent = Html.toHtml(mEtMsg.getText());
+        int start = messageContent.indexOf(">") + 1;
+        int end = messageContent.lastIndexOf("</p>");
+        if (end != -1) {
+            messageContent = messageContent.substring(start, end);
+            Log.d("ChatActivity", messageContent);
+        }
+
+        String emoji = "<img src='" + R.drawable.emoji + "'/>";
+        messageContent += emoji;
+        Spanned html = Html.fromHtml(messageContent, imageGetter, null);
+        mEtMsg.setText(html);
+    }
+
+    public void onMusicClick() {
+        NavigationUtil.navigateToMusicSelectPage(this);
+    }
+
 }

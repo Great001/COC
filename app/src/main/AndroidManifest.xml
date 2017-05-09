@@ -19,8 +19,8 @@
     <!-- 多媒体相关 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <!--窗口相关-->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!-- 窗口相关 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- IM云SDK相关权限 -->
     <permission
@@ -93,14 +93,12 @@
         <meta-data
             android:name="com.netease.cosine.target"
             android:value="" />
-
         <meta-data
             android:name="com.netease.cosine.target.receiver"
             android:value="com.netease.nimlib.service.NimReceiver" />
 
         <activity android:name=".activity.FindPwdActivity" />
         <activity android:name=".activity.AddFriendActivity" />
-
         <activity android:name=".activity.AddFriendVefifyActivity">
             <intent-filter>
                 <action android:name="com.example.liaohaicongsx.coc.addFriendVerify" />
@@ -108,8 +106,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activity.ChatActivity"
+        <activity
+            android:name=".activity.ChatActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.example.liaohaicongsx.coc.chatActivity" />
@@ -117,6 +115,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.SelectMusicActivity" />
+
+        <service
+            android:name=".service.MusicPlayService"
+            android:enabled="true"
+            android:exported="true" />
+
     </application>
 
 </manifest>

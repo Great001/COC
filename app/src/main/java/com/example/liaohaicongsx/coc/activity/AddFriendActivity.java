@@ -1,7 +1,6 @@
 package com.example.liaohaicongsx.coc.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -26,7 +25,6 @@ import rx.schedulers.Schedulers;
 public class AddFriendActivity extends BaseActivity {
 
     public static final String TAG = "AddFriendActivity";
-
     private EditText mEtAccount;
     private ListView mLvResults;
 
