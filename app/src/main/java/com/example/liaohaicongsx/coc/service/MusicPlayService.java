@@ -5,14 +5,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.RectF;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.Shape;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -27,28 +33,48 @@ import java.io.IOException;
  */
 public class MusicPlayService extends Service {
 
-    public static final String BROADCAST_ACTION = "com.example.liaohaicongsx.coc.service.MusicPlayService";
+    public static final String BROADCAST_ACTION = "com.example.liaohaicongsx.coc.service.MusicPlayService.play";
 
     public static final String MUSIC_PATH = "music_path";
+
+    public static final int MSG_PROGRESS_UPDATE = 1010;
+    public static final int PROGRESS_UPDATE_INTERVAL = 1000;
+
+    public static final int PROGRESS_PADDING = 8;
 
     private String mPath;
     private MediaPlayer mMediaPlayer;
 
     private WindowManager mWm;
-    private WindowManager.LayoutParams mWindowParams;
+    private WindowManager.LayoutParams mMusicViewParams;
     private ImageView mIvMusic;
+    private ShapeDrawable mProgressShape;
 
-    private MyBroadcastReceiver mReceiver;
+    private MusicPlayReceiver mReceiver;
 
     private boolean isFwShow = false;
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_PROGRESS_UPDATE:
+                    updateProgress();
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         mPath = intent.getStringExtra(MUSIC_PATH);
         RegisterBroadcastReceiver();  //注册广播监听
         initMusicPlayFw();  //初始化音乐播放悬浮窗
-
         mMediaPlayer = new MediaPlayer();
         try {
             mMediaPlayer.setDataSource(this, Uri.parse(mPath));
@@ -58,6 +84,7 @@ public class MusicPlayService extends Service {
                 public void onPrepared(MediaPlayer mp) {
                     showFw();  //显示悬浮窗
                     mp.start();
+                    showProgress();
                 }
             });
             mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -66,6 +93,7 @@ public class MusicPlayService extends Service {
                     mp.stop();
                     mp.release();
                     hideFw();
+                    handler.removeMessages(MSG_PROGRESS_UPDATE);
                 }
             });
         } catch (IOException e) {
@@ -80,18 +108,25 @@ public class MusicPlayService extends Service {
 
         mIvMusic = new ImageView(this);
         mIvMusic.setClickable(true);
-        mIvMusic.setImageResource(R.drawable.music_play);
+        mIvMusic.setImageResource(R.drawable.music_playing);
         mIvMusic.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(DimenUtil.dp2px(this, 50), DimenUtil.dp2px(this, 50));
-        mIvMusic.setLayoutParams(params);
+
+        mProgressShape = new ShapeDrawable();
+        mIvMusic.setBackgroundDrawable(mProgressShape);
+
+//        就算设置了也无效，具体原因待查
+//        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(DimenUtil.dp2px(this, 30), DimenUtil.dp2px(this, 30));
+//        mIvMusic.setLayoutParams(params);
 
         mIvMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mMediaPlayer.isPlaying()) {
                     mMediaPlayer.pause();
+                    mIvMusic.setImageResource(R.drawable.music_pause);
                 } else {
                     mMediaPlayer.start();
+                    mIvMusic.setImageResource(R.drawable.music_playing);
                 }
             }
         });
@@ -108,20 +143,20 @@ public class MusicPlayService extends Service {
 //            }
 //        });
 
-        mWindowParams = new WindowManager.LayoutParams();
-        mWindowParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-        mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        mWindowParams.format = PixelFormat.RGBA_8888;
-        mWindowParams.width = DimenUtil.dp2px(this, 40);
-        mWindowParams.height = DimenUtil.dp2px(this, 40);
-        mWindowParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
-        mWindowParams.x = DimenUtil.dp2px(this, 20);
-        mWindowParams.y = DimenUtil.dp2px(this, 60);
+        mMusicViewParams = new WindowManager.LayoutParams();
+        mMusicViewParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        mMusicViewParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        mMusicViewParams.format = PixelFormat.RGBA_8888;
+        mMusicViewParams.width = DimenUtil.dp2px(this, 40);
+        mMusicViewParams.height = DimenUtil.dp2px(this, 40);
+        mMusicViewParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
+        mMusicViewParams.x = DimenUtil.dp2px(this, 20);
+        mMusicViewParams.y = DimenUtil.dp2px(this, 60);
     }
 
     public void showFw() {
         if (!isFwShow) {
-            mWm.addView(mIvMusic, mWindowParams);
+            mWm.addView(mIvMusic, mMusicViewParams);
             isFwShow = true;
         }
     }
@@ -139,7 +174,7 @@ public class MusicPlayService extends Service {
         return null;
     }
 
-    class MyBroadcastReceiver extends BroadcastReceiver {
+    class MusicPlayReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             mPath = intent.getStringExtra(MUSIC_PATH);
@@ -148,7 +183,7 @@ public class MusicPlayService extends Service {
     }
 
     public void RegisterBroadcastReceiver() {
-        mReceiver = new MyBroadcastReceiver();
+        mReceiver = new MusicPlayReceiver();
         registerReceiver(mReceiver, new IntentFilter(BROADCAST_ACTION));
     }
 
@@ -174,12 +209,48 @@ public class MusicPlayService extends Service {
                     mp.stop();
                     mp.release();
                     hideFw();
+                    //播放完成，停止进度更新
+                    handler.removeMessages(MSG_PROGRESS_UPDATE);
                 }
             });
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
     }
+
+    public void showProgress() {
+        handler.sendEmptyMessageDelayed(MSG_PROGRESS_UPDATE, 1000);
+    }
+
+    public void updateProgress() {
+        int duration = mMediaPlayer.getDuration();
+        int currentPos = mMediaPlayer.getCurrentPosition();
+        final int sweepAngel = (currentPos * 360) / duration;
+        if (mProgressShape != null) {
+            mProgressShape.setShape(new Shape() {
+                @Override
+                public void draw(Canvas canvas, Paint paint) {
+                    int left = mIvMusic.getLeft() + PROGRESS_PADDING;
+                    int right = mIvMusic.getRight() - PROGRESS_PADDING;
+                    int top = mIvMusic.getTop() + PROGRESS_PADDING;
+                    int bottom = mIvMusic.getBottom() - PROGRESS_PADDING;
+                    RectF rect = new RectF(left, top, right, bottom);
+
+                    paint.setColor(getResources().getColor(R.color.sky_blue));
+                    paint.setStyle(Paint.Style.STROKE);
+                    paint.setStrokeCap(Paint.Cap.SQUARE);
+                    paint.setStrokeWidth(16);
+
+                    canvas.drawArc(rect, -90, sweepAngel, false, paint);
+                }
+            });
+            mIvMusic.setBackgroundDrawable(mProgressShape);
+            if (sweepAngel <= 360) {
+                handler.sendEmptyMessageDelayed(MSG_PROGRESS_UPDATE, PROGRESS_UPDATE_INTERVAL);
+            }
+        }
+    }
+
 
     @Override
     public void onDestroy() {
@@ -187,6 +258,7 @@ public class MusicPlayService extends Service {
         mMediaPlayer.release();
         mMediaPlayer = null;
         hideFw();
+        handler.removeMessages(MSG_PROGRESS_UPDATE);
         unregisterReceiver(mReceiver);
         super.onDestroy();
     }
