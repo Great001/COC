@@ -34,6 +34,7 @@ import java.util.List;
  */
 public class CocApplication extends Application {
 
+    public static final int ID_IM_NOTIFICATION = 0;
     private NotifyFloatingView notifyFloatingView;  //消息通知悬浮窗
 
     @Override
@@ -58,6 +59,11 @@ public class CocApplication extends Application {
     }
 
 
+    /**
+     * 获取网易云信SDK的配置选项
+     *
+     * @return
+     */
     public SDKOptions getSDKOptions() {
         SDKOptions options = new SDKOptions();
 
@@ -94,6 +100,9 @@ public class CocApplication extends Application {
     }
 
 
+    /**
+     * 注册系统通知监听器
+     */
     public void registerSystemMsgObserver() {
         //监听系统消息
         NIMClient.getService(SystemMessageObserver.class)
@@ -107,6 +116,9 @@ public class CocApplication extends Application {
                 }, true);
     }
 
+    /**
+     * 注册IM消息监听器
+     */
     public void registerImMsgObserver() {
         //监听IM消息
         Observer<List<IMMessage>> incomingMsgObserver = new Observer<List<IMMessage>>() {
@@ -125,6 +137,10 @@ public class CocApplication extends Application {
     }
 
 
+    /**
+     * 处理好友添加消息
+     * @param message
+     */
     public void dealWithAddFriendMsg(SystemMessage message) {
         AddFriendNotify attachData = (AddFriendNotify) message.getAttachObject();
         if (attachData != null) {
@@ -145,6 +161,12 @@ public class CocApplication extends Application {
         }
     }
 
+    /**
+     * 显示好友添加请求通知
+     * @param contentTitle
+     * @param message
+     * @param action
+     */
     public void showAddFriendNotification(int contentTitle, SystemMessage message, String action) {
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -161,6 +183,10 @@ public class CocApplication extends Application {
         nm.notify(0, builder.build());
     }
 
+    /**
+     * 接收到IM消息时通知栏显示
+     * @param imMessages
+     */
     public void showImMsgNotification(List<IMMessage> imMessages) {
         IMMessage message = imMessages.get(0);
         String fromAccount = message.getFromAccount();
@@ -179,9 +205,13 @@ public class CocApplication extends Application {
         builder.setAutoCancel(true);
 
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(0, builder.build());
+        nm.notify(ID_IM_NOTIFICATION, builder.build());
     }
 
+    /**
+     * 接收到消息显示悬浮通知弹窗
+     * @param msg
+     */
     public void showNotifyWindow(final IMMessage msg) {
         if (notifyFloatingView != null) {
             notifyFloatingView.setOnNotifyClickListener(new NotifyFloatingView.OnNotifyClickListener() {
@@ -191,6 +221,8 @@ public class CocApplication extends Application {
                     intent.putExtra(ChatActivity.ACCOUNT, msg.getFromAccount());
                     intent.putExtra(ChatActivity.NICK, msg.getFromNick());
                     AppActivityManager.getInstance().topActivity().startActivity(intent);
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancel(ID_IM_NOTIFICATION);
                 }
             });
             notifyFloatingView.show(msg);
@@ -198,6 +230,11 @@ public class CocApplication extends Application {
     }
 
 
+    /**
+     * 判断当前是否在应用主进程
+     * @param context
+     * @return
+     */
     public boolean inMainProcess(Context context) {
         String packageName = context.getPackageName();
         String processName = SystemUtil.getProcessName(context);

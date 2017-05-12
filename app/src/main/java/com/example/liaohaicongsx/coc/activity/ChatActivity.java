@@ -1,5 +1,6 @@
 package com.example.liaohaicongsx.coc.activity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
@@ -21,19 +23,20 @@ import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.ChatAdapter;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
-import com.example.liaohaicongsx.coc.util.ToastUtil;
-import com.example.liaohaicongsx.coc.view.NotifyFloatingView;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
-import com.netease.nimlib.sdk.RequestCallback;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.msg.MessageBuilder;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.MsgServiceObserve;
+import com.netease.nimlib.sdk.msg.attachment.FileAttachment;
+import com.netease.nimlib.sdk.msg.constant.AttachStatusEnum;
+import com.netease.nimlib.sdk.msg.constant.MsgTypeEnum;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 import com.netease.nimlib.sdk.msg.model.QueryDirectionEnum;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +44,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     public static final String ACCOUNT = "account";
     public static final String NICK = "nick";
+
+    public static final String MSG_MUSIC_PATH = "music_path";
+    public static final String MSG_MUSIC_NAME = "music_name";
 
     private RelativeLayout mRlRoot;
     private ListView mLvChat;
@@ -53,36 +59,31 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private ChatAdapter mAdapter;
     private List<IMMessage> mMsgList = new ArrayList<>();
 
-    private String account;
-    private String nick;
+    private String mAccount;
+    private String mNick;
 
-    private boolean isForground;
-    private NotifyFloatingView notifyFloatingView;
+    private boolean mIsForground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        account = getIntent().getStringExtra(ACCOUNT);
-        nick = getIntent().getStringExtra(NICK);
+        mAccount = getIntent().getStringExtra(ACCOUNT);
+        mNick = getIntent().getStringExtra(NICK);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setTitle(nick);
+            actionBar.setTitle(mNick);
         }
-
         AppActivityManager.getInstance().push(this);
 
         initView();
 
-
-        queryOldMsgRecords();    //查询历史纪录
-        observeRecvMessage();    //接收消息
-
-        notifyFloatingView = new NotifyFloatingView(this);
+        queryOldMsgRecords();
+        observeRecvMessage();
     }
 
 
@@ -116,10 +117,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (s.length() > 0) {
                     mBtnSend.setClickable(true);
-                    mBtnSend.setBackgroundResource(R.drawable.bg_btn_chat_send);
+                    mBtnSend.setBackgroundResource(R.drawable.bg_btn_chat_send_able);
                 } else {
                     mBtnSend.setClickable(false);
-                    mBtnSend.setBackgroundResource(R.drawable.bg_btn_chat_send_not);
+                    mBtnSend.setBackgroundResource(R.drawable.bg_btn_chat_send_not_able);
                 }
             }
         });
@@ -129,6 +130,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 Spanned messageContent = mEtMsg.getText();
                 String message = Html.toHtml(messageContent);
+                //去除转换过程中自动生成的html标签
                 int start = message.indexOf(">") + 1;
                 int end = message.lastIndexOf("</p>");
                 if (end != -1) {
@@ -139,27 +141,20 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
 
-
+            /**
+             * 发送消息
+             *
+             * @param msg html格式化的文本消息
+             */
             public void sendMsg(String msg) {
-                final IMMessage message = MessageBuilder.createTextMessage(account, SessionTypeEnum.P2P, msg);
+                final IMMessage message = MessageBuilder.createTextMessage(mAccount, SessionTypeEnum.P2P, msg);
                 mMsgList.add(message);
                 mAdapter.setMessages(mMsgList);
                 mAdapter.notifyDataSetChanged();
                 mEtMsg.setText("");
-//                showNotifyWindow(message);
-                NIMClient.getService(MsgService.class).sendMessage(message, true).setCallback(new RequestCallback<Void>() {
+                NIMClient.getService(MsgService.class).sendMessage(message, true).setCallback(new RequestCallbackWrapper<Void>() {
                     @Override
-                    public void onSuccess(Void param) {
-                    }
-
-                    @Override
-                    public void onFailed(int code) {
-                        ToastUtil.show(ChatActivity.this, "发送失败");
-                    }
-
-                    @Override
-                    public void onException(Throwable exception) {
-                        exception.printStackTrace();
+                    public void onResult(int code, Void result, Throwable exception) {
 
                     }
                 });
@@ -169,10 +164,19 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    /**
+     * 监听处理收到的IM消息
+     */
     public void observeRecvMessage() {
         Observer<List<IMMessage>> incomingMsgObserver = new Observer<List<IMMessage>>() {
             @Override
             public void onEvent(List<IMMessage> imMessages) {
+                for (IMMessage message : imMessages) {
+                    if (message.getMsgType() == MsgTypeEnum.file && !isFileAttachmentExists(message)) {
+                        //自动下载附件文件
+                        NIMClient.getService(MsgService.class).downloadAttachment(message, true);
+                   }
+               }
                 mMsgList.addAll(imMessages);
                 mAdapter.setMessages(mMsgList);
                 mAdapter.notifyDataSetChanged();
@@ -183,8 +187,26 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    /**
+     * 判断当前消息附近是否已经存在
+     *
+     * @param message 接收到文件附件消息
+     * @return
+     */
+    private boolean isFileAttachmentExists(IMMessage message) {
+        if (message.getAttachStatus() == AttachStatusEnum.transferred &&
+                !TextUtils.isEmpty(((FileAttachment) message.getAttachment()).getPath())) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 查询历史消息记录
+     */
     public void queryOldMsgRecords() {
-        IMMessage emptyMsg = MessageBuilder.createEmptyMessage(account, SessionTypeEnum.P2P, System.currentTimeMillis());
+        IMMessage emptyMsg = MessageBuilder.createEmptyMessage(mAccount, SessionTypeEnum.P2P, System.currentTimeMillis());
         NIMClient.getService(MsgService.class).queryMessageListEx(emptyMsg, QueryDirectionEnum.QUERY_OLD, 50, true).setCallback(new RequestCallbackWrapper<List<IMMessage>>() {
             @Override
             public void onResult(int code, List<IMMessage> result, Throwable exception) {
@@ -200,14 +222,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        setForground(true);
-        mRlRoot.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-//                InputMethodManager  im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                im.hideSoftInputFromWindow(mRlRoot.getWindowToken(),InputMethodManager.RESULT_HIDDEN);
-            }
-        });
+        setIsForground(true);
     }
 
 
@@ -230,25 +245,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void showNotifyWindow(IMMessage msg) {
-        if (notifyFloatingView != null) {
-            notifyFloatingView.show(msg);
-        }
-    }
-
-
     @Override
     protected void onStop() {
         super.onStop();
-        setForground(false);
+        setIsForground(false);
     }
 
     public boolean isForground() {
-        return isForground;
+        return mIsForground;
     }
 
-    public void setForground(boolean forground) {
-        isForground = forground;
+    public void setIsForground(boolean mIsForground) {
+        this.mIsForground = mIsForground;
     }
 
     @Override
@@ -294,4 +302,30 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         NavigationUtil.navigateToMusicSelectPage(this);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String name = intent.getStringExtra(MSG_MUSIC_NAME);
+        String path = intent.getStringExtra(MSG_MUSIC_PATH);
+        if (name != null && path != null) {
+            File musicFile = new File(path);
+            IMMessage message = new MessageBuilder().createFileMessage(mAccount, SessionTypeEnum.P2P, musicFile, name);
+            //发送文件附件消息
+            NIMClient.getService(MsgService.class).sendMessage(message, true);
+            // 监听消息状态变化
+            Observer<IMMessage> statusObserver = new Observer<IMMessage>() {
+                @Override
+                public void onEvent(IMMessage msg) {
+                    if (msg.getAttachStatus() == AttachStatusEnum.transferred) {
+
+                    }
+                }
+            };
+            mMsgList.add(message);
+            mAdapter.notifyDataSetChanged();
+            mLvChat.setSelection(mAdapter.getCount() - 1);
+            //监听文件附件消息发送状态
+            NIMClient.getService(MsgServiceObserve.class).observeMsgStatus(statusObserver,true);
+        }
+    }
 }

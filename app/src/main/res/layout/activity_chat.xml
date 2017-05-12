@@ -40,7 +40,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_weight="4"
-            android:background="@drawable/bg_btn_chat_send_not"
+            android:background="@drawable/bg_btn_chat_send_not_able"
             android:clickable="false"
             android:text="发送"
             android:textColor="@color/white" />

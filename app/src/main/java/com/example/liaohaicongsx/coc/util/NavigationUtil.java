@@ -61,5 +61,11 @@ public class NavigationUtil {
         context.startActivity(intent);
     }
 
+    public static void backToChatPage(Context context, String name, String path) {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtra(ChatActivity.MSG_MUSIC_PATH, path);
+        intent.putExtra(ChatActivity.MSG_MUSIC_NAME, name);
+        context.startActivity(intent);
+    }
 
 }
