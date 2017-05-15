@@ -42,7 +42,7 @@ public class NotifyFloatingView extends LinearLayout {
 
     public NotifyFloatingView(Context context) {
         this(context, null);
-    }
+            }
 
     public NotifyFloatingView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -66,7 +66,7 @@ public class NotifyFloatingView extends LinearLayout {
                 hide();
             }
         });
-    }
+            }
 
 
     //悬浮窗参数设置
