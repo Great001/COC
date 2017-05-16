@@ -35,7 +35,7 @@ import java.util.List;
 public class CocApplication extends Application {
 
     public static final int ID_IM_NOTIFICATION = 0;
-    private NotifyFloatingView notifyFloatingView;  //消息通知悬浮窗
+    private NotifyFloatingView mNotifyFloatingView;  //消息通知悬浮窗
 
     @Override
     public void onCreate() {
@@ -52,7 +52,7 @@ public class CocApplication extends Application {
 
         //等待主进程，进行监听服务注册
         if (inMainProcess(this)) {
-            notifyFloatingView = new NotifyFloatingView(this);
+            mNotifyFloatingView = new NotifyFloatingView(this);
             registerSystemMsgObserver();   //监听系统通知
             registerImMsgObserver();       //监听IM消息
         }
@@ -124,7 +124,7 @@ public class CocApplication extends Application {
         Observer<List<IMMessage>> incomingMsgObserver = new Observer<List<IMMessage>>() {
             @Override
             public void onEvent(List<IMMessage> imMessages) {
-                Activity topActivity = AppActivityManager.getInstance().topActivity();
+                Activity topActivity = AppActivityManager.getAppActivityManager().topActivity();
                 if (topActivity instanceof ChatActivity && ((ChatActivity) topActivity).isForground()) {
                     //当前已经是聊天页面，不弹出新消息通知
                 } else {
@@ -213,19 +213,19 @@ public class CocApplication extends Application {
      * @param msg
      */
     public void showNotifyWindow(final IMMessage msg) {
-        if (notifyFloatingView != null) {
-            notifyFloatingView.setOnNotifyClickListener(new NotifyFloatingView.OnNotifyClickListener() {
+        if (mNotifyFloatingView != null) {
+            mNotifyFloatingView.setOnNotifyClickListener(new NotifyFloatingView.OnNotifyClickListener() {
                 @Override
                 public void onNotifyClick() {
                     Intent intent = new Intent("com.example.liaohaicongsx.coc.chatActivity");
                     intent.putExtra(ChatActivity.ACCOUNT, msg.getFromAccount());
                     intent.putExtra(ChatActivity.NICK, msg.getFromNick());
-                    AppActivityManager.getInstance().topActivity().startActivity(intent);
+                    AppActivityManager.getAppActivityManager().topActivity().startActivity(intent);
                     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.cancel(ID_IM_NOTIFICATION);
                 }
             });
-            notifyFloatingView.show(msg);
+            mNotifyFloatingView.show(msg);
         }
     }
 

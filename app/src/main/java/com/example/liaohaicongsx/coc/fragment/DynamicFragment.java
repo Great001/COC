@@ -15,12 +15,15 @@ import com.example.liaohaicongsx.coc.view.PullToRefreshLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 动态页面
+ */
 public class DynamicFragment extends Fragment implements PullToRefreshLayout.OnRefreshListener {
 
     private PullToRefreshLayout mPrflTest;
     private ListView mLvTest;
     private LvAdapter mAdapter;
-    private List<String> imgUrls;
+    private List<String> mListImgUrl;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -28,23 +31,23 @@ public class DynamicFragment extends Fragment implements PullToRefreshLayout.OnR
         mPrflTest = (PullToRefreshLayout) view.findViewById(R.id.prfl_test);
         mLvTest = (ListView) view.findViewById(R.id.lv_test);
 
-        imgUrls = new ArrayList<>();
+        mListImgUrl = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            imgUrls.add("http://i2.muimg.com/1949/732523acc12d5e27.jpg");
-            imgUrls.add("http://i2.muimg.com/1949/170b75304ea82905.jpg");
-            imgUrls.add("http://i2.muimg.com/1949/3aff8f1b5523beb7.jpg");
-//            imgUrls.add("http://i2.muimg.com/1949/0f5cee8f7dd92b41.jpg");
-//            imgUrls.add("http://i2.muimg.com/1949/5996c150cb12db75.jpg");
+            mListImgUrl.add("http://i2.muimg.com/1949/732523acc12d5e27.jpg");
+            mListImgUrl.add("http://i2.muimg.com/1949/170b75304ea82905.jpg");
+            mListImgUrl.add("http://i2.muimg.com/1949/3aff8f1b5523beb7.jpg");
+//            mListImgUrl.add("http://i2.muimg.com/1949/0f5cee8f7dd92b41.jpg");
+//            mListImgUrl.add("http://i2.muimg.com/1949/5996c150cb12db75.jpg");
         }
 
         mPrflTest.setOnRefreshLister(this);
-        mAdapter = new LvAdapter(getActivity(), imgUrls);
+        mAdapter = new LvAdapter(getActivity(), mListImgUrl);
         mLvTest.setAdapter(mAdapter);
 
         mLvTest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ImageFragment.newInstance(imgUrls.get(position)).show(getActivity().getFragmentManager(), imgUrls.get(position));
+                ImageFragment.newInstance(mListImgUrl.get(position)).show(getActivity().getFragmentManager(), mListImgUrl.get(position));
             }
         });
         return view;

@@ -26,27 +26,27 @@ import java.util.List;
  */
 public class ASResultAdapter extends BaseAdapter {
 
-    private Context context;
+    private Context mContext;
 
-    private List<UserInfo> userInfos = new ArrayList<>();
+    private List<UserInfo> mInfoList = new ArrayList<>();
 
     public ASResultAdapter(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     public void setSearchData(List<UserInfo> uinfos) {
-        userInfos = uinfos;
+        mInfoList = uinfos;
     }
 
 
     @Override
     public int getCount() {
-        return userInfos.size();
+        return mInfoList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return userInfos.get(position);
+        return mInfoList.get(position);
     }
 
     @Override
@@ -58,16 +58,16 @@ public class ASResultAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         MyViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.accout_search_lv_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.accout_search_lv_item, null);
             holder = new MyViewHolder(convertView);
             convertView.setTag(holder);
 
         } else {
             holder = (MyViewHolder) convertView.getTag();
         }
-        final UserInfo userInfo = userInfos.get(position);
-        holder.tvName.setText(userInfo.getName());
-        holder.tvAdd.setOnClickListener(new View.OnClickListener() {
+        final UserInfo userInfo = mInfoList.get(position);
+        holder.mTvName.setText(userInfo.getName());
+        holder.mTvAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final VerifyType verifyType = VerifyType.VERIFY_REQUEST; // 发起好友验证请求
@@ -77,7 +77,7 @@ public class ASResultAdapter extends BaseAdapter {
                         .setCallback(new RequestCallback<Void>() {
                             @Override
                             public void onSuccess(Void param) {
-                                ToastUtil.show(context, "添加成功");
+                                ToastUtil.show(mContext, "添加成功");
                             }
 
                             @Override
@@ -95,18 +95,19 @@ public class ASResultAdapter extends BaseAdapter {
         return convertView;
     }
 
+    /**
+     *
+     */
     class MyViewHolder {
-        ImageView ivAvatar;
-        TextView tvName;
-        TextView tvAdd;
+        ImageView mIvAvatar;
+        TextView mTvName;
+        TextView mTvAdd;
 
         public MyViewHolder(View itemView) {
-            ivAvatar = (ImageView) itemView.findViewById(R.id.iv_item_avatar);
-            tvName = (TextView) itemView.findViewById(R.id.tv_item_name);
-            tvAdd = (TextView) itemView.findViewById(R.id.tv_item_add_friend);
+            mIvAvatar = (ImageView) itemView.findViewById(R.id.iv_item_avatar);
+            mTvName = (TextView) itemView.findViewById(R.id.tv_item_name);
+            mTvAdd = (TextView) itemView.findViewById(R.id.tv_item_add_friend);
         }
-
-
     }
 
 }

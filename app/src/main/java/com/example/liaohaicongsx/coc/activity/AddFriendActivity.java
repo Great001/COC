@@ -22,13 +22,16 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+/**
+ * 好友添加页面
+ */
 public class AddFriendActivity extends BaseActivity {
 
     public static final String TAG = "AddFriendActivity";
     private EditText mEtAccount;
     private ListView mLvResults;
 
-    private ASResultAdapter adapter;
+    private ASResultAdapter mASResultAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +41,8 @@ public class AddFriendActivity extends BaseActivity {
         mEtAccount = (EditText) findViewById(R.id.et_input_to_add_account);
         mLvResults = (ListView) findViewById(R.id.lv_account_search_result);
 
-        adapter = new ASResultAdapter(this);
-        mLvResults.setAdapter(adapter);
+        mASResultAdapter = new ASResultAdapter(this);
+        mLvResults.setAdapter(mASResultAdapter);
 
         mEtAccount.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -84,8 +87,8 @@ public class AddFriendActivity extends BaseActivity {
                         Log.d(TAG, responseUserInfos.toString());
                         final List<UserInfo> userInfoLists = responseUserInfos.getUinfos();
 
-                        adapter.setSearchData(userInfoLists);
-                        adapter.notifyDataSetChanged();
+                        mASResultAdapter.setSearchData(userInfoLists);
+                        mASResultAdapter.notifyDataSetChanged();
 
                     }
                 });

@@ -11,6 +11,9 @@ import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
 
+/**
+ * 启动页
+ */
 public class SplashActivity extends AppCompatActivity {
     /**
      * 进入首页按钮
@@ -26,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        AppActivityManager.getInstance().push(this);
+        AppActivityManager.getAppActivityManager().push(this);
 
         mBtnEnter = (Button) findViewById(R.id.btn_enter_main_page);
         mIvAd = (ImageView) findViewById(R.id.iv_splash);

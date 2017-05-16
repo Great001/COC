@@ -21,26 +21,26 @@ import java.util.List;
  */
 public class NewFriendAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<SystemMessage> systemMsgs = new ArrayList<>();
+    private Context mContext;
+    private List<SystemMessage> mSystemMessageList = new ArrayList<>();
 
-    public NewFriendAdapter(Context context){
-        this.context = context;
+    public NewFriendAdapter(Context context) {
+        this.mContext = context;
     }
 
-    public void setData(List<SystemMessage> list){
-        systemMsgs = list;
+    public void setData(List<SystemMessage> list) {
+        mSystemMessageList = list;
     }
 
 
     @Override
     public int getCount() {
-        return systemMsgs.size();
+        return mSystemMessageList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return systemMsgs.get(position);
+        return mSystemMessageList.get(position);
     }
 
     @Override
@@ -50,44 +50,45 @@ public class NewFriendAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-         ViewHolder holder = null;
-        if(convertView == null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.lv_new_friend_item,null);
+        ViewHolder holder = null;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.lv_new_friend_item, null);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-        }else{
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final SystemMessage message = systemMsgs.get(position);
-        holder.tvName.setText(message.getFromAccount());
-        holder.tvHandle.setOnClickListener(new View.OnClickListener() {
+        final SystemMessage message = mSystemMessageList.get(position);
+        holder.mTvName.setText(message.getFromAccount());
+        holder.mTvHandler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //通过验证请求
-                NIMClient.getService(FriendService.class).ackAddFriendRequest(message.getFromAccount(),true);
+                NIMClient.getService(FriendService.class).ackAddFriendRequest(message.getFromAccount(), true);
                 v.setBackgroundResource(R.color.white);
                 v.setClickable(false);
-                ((TextView)v).setText("已同意");
+                ((TextView) v).setText("已同意");
             }
         });
         return convertView;
     }
 
 
+    /**
+     *
+     */
+    class ViewHolder {
+        ImageView mIvAvatar;
+        TextView mTvName;
+        TextView mTvRequest;
+        TextView mTvHandler;
 
-
-    class ViewHolder{
-        ImageView ivAvatar;
-        TextView tvName;
-        TextView tvRequest;
-        TextView tvHandle;
-
-        ViewHolder(View itemView){
-            ivAvatar = (ImageView) itemView.findViewById(R.id.iv_new_friend_avatar);
-            tvHandle = (TextView) itemView.findViewById(R.id.tv_new_friend_handle_request);
-            tvName = (TextView) itemView.findViewById(R.id.tv_new_friend_name);
-            tvRequest = (TextView) itemView.findViewById(R.id.tv_new_friend_request);
+        ViewHolder(View itemView) {
+            mIvAvatar = (ImageView) itemView.findViewById(R.id.iv_new_friend_avatar);
+            mTvHandler = (TextView) itemView.findViewById(R.id.tv_new_friend_handle_request);
+            mTvName = (TextView) itemView.findViewById(R.id.tv_new_friend_name);
+            mTvRequest = (TextView) itemView.findViewById(R.id.tv_new_friend_request);
         }
 
     }

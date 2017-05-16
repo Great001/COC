@@ -28,6 +28,9 @@ import com.example.liaohaicongsx.coc.util.NavigationUtil;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
+/**
+ * 主页面
+ */
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDlMainPage;
@@ -49,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.avatar);
             actionBar.setTitle("");
         }
-        AppActivityManager.getInstance().push(this);
+        AppActivityManager.getAppActivityManager().push(this);
         initView();
     }
 
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         mTvNickName = (TextView) findViewById(R.id.tv_user_nickname);
         mTvNickName.setText(UserModel.getInstance().getUserInfo().getName());
 
-        mVpTabs.setAdapter(tabsAdapter);
+        mVpTabs.setAdapter(mFragmentPagerAdapter);
         mCurrentItem = 0;
         mVpTabs.setCurrentItem(mCurrentItem);
         ((RadioButton) mRgSelectTab.getChildAt(mCurrentItem)).setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    FragmentPagerAdapter tabsAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+    FragmentPagerAdapter mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
         @Override
         public Fragment getItem(int position) {
             Fragment fragment = null;

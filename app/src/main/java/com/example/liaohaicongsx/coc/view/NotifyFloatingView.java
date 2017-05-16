@@ -23,26 +23,26 @@ import com.netease.nimlib.sdk.msg.model.IMMessage;
  */
 public class NotifyFloatingView extends LinearLayout {
 
-    private WindowManager windowManager;
-    private WindowManager.LayoutParams windowParams;
-    private OnNotifyClickListener onNotifyClickListener;
+    private WindowManager mWindowManager;
+    private WindowManager.LayoutParams mLayoutParams;
+    private OnNotifyClickListener mOnNotifyClickListener;
 
-    private TextView tvContent;
-    private boolean isAttchToWindow;
+    private TextView mTvContent;
+    private boolean mIsAttchToWindow;
 
-    private Handler handler;
-    private Runnable runnable = new Runnable() {
+    private Handler mHandler;
+    private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
             if (isAttchToWindow()) {
-                windowManager.removeView(NotifyFloatingView.this);
+                mWindowManager.removeView(NotifyFloatingView.this);
             }
         }
     };
 
     public NotifyFloatingView(Context context) {
         this(context, null);
-            }
+    }
 
     public NotifyFloatingView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -50,48 +50,48 @@ public class NotifyFloatingView extends LinearLayout {
 
     public NotifyFloatingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        handler = new Handler();
-        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        mHandler = new Handler();
+        mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         setupFloatingWindow();
         View notifyView = LayoutInflater.from(context).inflate(R.layout.notifyview, null);
-        tvContent = (TextView) notifyView.findViewById(R.id.tv_notify_msg);
+        mTvContent = (TextView) notifyView.findViewById(R.id.tv_notify_msg);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         addView(notifyView, params);
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onNotifyClickListener != null) {
-                    onNotifyClickListener.onNotifyClick();
+                if (mOnNotifyClickListener != null) {
+                    mOnNotifyClickListener.onNotifyClick();
                 }
                 hide();
             }
         });
-            }
+    }
 
 
     //悬浮窗参数设置
     public void setupFloatingWindow() {
-        windowParams = new WindowManager.LayoutParams();
-        windowParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;   //系统级窗口
-        windowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;   //不获取焦点
-        windowParams.format = PixelFormat.RGBA_8888;   //图像模式
-        windowParams.gravity = Gravity.TOP | Gravity.LEFT;  //居上，居左
-        windowParams.y = 0;
-        windowParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        windowParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        mLayoutParams = new WindowManager.LayoutParams();
+        mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;   //系统级窗口
+        mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;   //不获取焦点
+        mLayoutParams.format = PixelFormat.RGBA_8888;   //图像模式
+        mLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;  //居上，居左
+        mLayoutParams.y = 0;
+        mLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
 
     public void show(IMMessage message) {
         if (!isAttchToWindow()) {
-            windowManager.addView(this, windowParams);
-            handler.postDelayed(runnable, 5000);
+            mWindowManager.addView(this, mLayoutParams);
+            mHandler.postDelayed(mRunnable, 5000);
         } else {
 //            移除重新计算
-            handler.removeCallbacks(runnable);
-            handler.postDelayed(runnable, 5000);
+            mHandler.removeCallbacks(mRunnable);
+            mHandler.postDelayed(mRunnable, 5000);
         }
-        tvContent.setText(Html.fromHtml(message.getContent(), new Html.ImageGetter() {
+        mTvContent.setText(Html.fromHtml(message.getContent(), new Html.ImageGetter() {
             @Override
             public Drawable getDrawable(String source) {
                 Drawable drawable = getResources().getDrawable(Integer.valueOf(source));
@@ -103,18 +103,18 @@ public class NotifyFloatingView extends LinearLayout {
 
     public void hide() {
         if (isAttchToWindow()) {
-            windowManager.removeView(this);
-            handler.removeCallbacks(runnable);
+            mWindowManager.removeView(this);
+            mHandler.removeCallbacks(mRunnable);
         }
     }
 
 
     public boolean isAttchToWindow() {
-        return isAttchToWindow;
+        return mIsAttchToWindow;
     }
 
     public void setAttchToWindow(boolean attchToWindow) {
-        isAttchToWindow = attchToWindow;
+        mIsAttchToWindow = attchToWindow;
     }
 
     @Override
@@ -131,12 +131,15 @@ public class NotifyFloatingView extends LinearLayout {
         Log.d("Notify", "onDetach");
     }
 
+    /**
+     * 通知回调接口
+     */
     public interface OnNotifyClickListener {
         void onNotifyClick();
     }
 
     public void setOnNotifyClickListener(OnNotifyClickListener listener) {
-        this.onNotifyClickListener = listener;
+        this.mOnNotifyClickListener = listener;
     }
 
 

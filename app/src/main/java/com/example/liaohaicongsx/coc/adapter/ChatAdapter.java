@@ -31,13 +31,13 @@ public class ChatAdapter extends BaseAdapter {
     public static final int ITEM_TYPE_OUT = 1;
 
 
-    private Context context;
-    private List<IMMessage> messages = new ArrayList<>();
-    private Html.ImageGetter imageGetter;
+    private Context mContext;
+    private List<IMMessage> mIMMessages = new ArrayList<>();
+    private Html.ImageGetter mImageGetter;
 
     public ChatAdapter(final Context context) {
-        this.context = context;
-        imageGetter = new Html.ImageGetter() {
+        this.mContext = context;
+        mImageGetter = new Html.ImageGetter() {
             @Override
             public Drawable getDrawable(String source) {
                 Drawable drawable = context.getResources().getDrawable(Integer.valueOf(source));
@@ -47,18 +47,18 @@ public class ChatAdapter extends BaseAdapter {
         };
     }
 
-    public void setMessages(List<IMMessage> list){
-        messages = list;
+    public void setIMMessages(List<IMMessage> list) {
+        mIMMessages = list;
     }
 
     @Override
     public int getCount() {
-        return messages.size();
+        return mIMMessages.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return messages.get(position);
+        return mIMMessages.get(position);
     }
 
     @Override
@@ -69,52 +69,52 @@ public class ChatAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ChatViewHolder holder = null;
-        if(convertView == null){
-            if(getItemViewType(position) == ITEM_TYPE_IN){
-                convertView = LayoutInflater.from(context).inflate(R.layout.lv_chat_item_in,null);
-            }else{
-                convertView = LayoutInflater.from(context).inflate(R.layout.lv_chat_item_out,null);
+        if (convertView == null) {
+            if (getItemViewType(position) == ITEM_TYPE_IN) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.lv_chat_item_in, null);
+            } else {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.lv_chat_item_out, null);
             }
             holder = new ChatViewHolder(convertView);
             convertView.setTag(holder);
-        }else{
+        } else {
             holder = (ChatViewHolder) convertView.getTag();
         }
-        final IMMessage message = messages.get(position);
+        final IMMessage message = mIMMessages.get(position);
         if (message.getMsgType() == MsgTypeEnum.file) {
-            holder.tvMsgContent.setVisibility(View.GONE);
-            holder.tvMsgFile.setVisibility(View.VISIBLE);
-            holder.tvMsgFile.setText(((FileAttachment) message.getAttachment()).getDisplayName());
-            holder.tvMsgFile.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.mTvContent.setVisibility(View.GONE);
+            holder.mTvMusic.setVisibility(View.VISIBLE);
+            holder.mTvMusic.setText(((FileAttachment) message.getAttachment()).getDisplayName());
+            holder.mTvMusic.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     FileAttachment file = (FileAttachment) message.getAttachment();
                     String path = file.getPath();
                     if (path != null) {
                         Log.d("Chat", path);
-                        Intent intent = new Intent(context, MusicPlayService.class);
+                        Intent intent = new Intent(mContext, MusicPlayService.class);
                         intent.putExtra(MusicPlayService.MUSIC_PATH, file.getPath());
-                        context.startService(intent);
+                        mContext.startService(intent);
                     }
                     return false;
                 }
             });
         } else {
-            if (holder.tvMsgContent.getVisibility() != View.VISIBLE) {
-                holder.tvMsgContent.setVisibility(View.VISIBLE);
-                holder.tvMsgFile.setVisibility(View.GONE);
+            if (holder.mTvContent.getVisibility() != View.VISIBLE) {
+                holder.mTvContent.setVisibility(View.VISIBLE);
+                holder.mTvMusic.setVisibility(View.GONE);
             }
-            holder.tvMsgContent.setText(Html.fromHtml(message.getContent(), imageGetter, null));
+            holder.mTvContent.setText(Html.fromHtml(message.getContent(), mImageGetter, null));
         }
         return convertView;
     }
 
     @Override
     public int getItemViewType(int position) {
-        IMMessage message = messages.get(position);
+        IMMessage message = mIMMessages.get(position);
         if (message.getDirect() == MsgDirectionEnum.In) {
             return ITEM_TYPE_IN;
-        }else{
+        } else {
             return ITEM_TYPE_OUT;
         }
     }
@@ -125,15 +125,18 @@ public class ChatAdapter extends BaseAdapter {
         return 2;
     }
 
-    class ChatViewHolder{
-        TextView tvMsgContent;
-        TextView tvMsgFile;
-        ImageView ivAvatar;
+    /**
+     *
+     */
+    class ChatViewHolder {
+        TextView mTvContent;
+        TextView mTvMusic;
+        ImageView mIvAvatar;
 
-        ChatViewHolder(View itemView){
-            tvMsgContent = (TextView) itemView.findViewById(R.id.tv_chat_message_content);
-            tvMsgFile = (TextView) itemView.findViewById(R.id.tv_chat_message_attachment_music);
-            ivAvatar = (ImageView) itemView.findViewById(R.id.iv_chatter_avatar);
+        ChatViewHolder(View itemView) {
+            mTvContent = (TextView) itemView.findViewById(R.id.tv_chat_message_content);
+            mTvMusic = (TextView) itemView.findViewById(R.id.tv_chat_message_attachment_music);
+            mIvAvatar = (ImageView) itemView.findViewById(R.id.iv_chatter_avatar);
         }
     }
 

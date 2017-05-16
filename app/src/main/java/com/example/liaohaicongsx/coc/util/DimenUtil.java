@@ -16,7 +16,7 @@ public class DimenUtil {
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
         float denstity = metrics.density;
-        return ((int) (dp * denstity));
+        return (int) (dp * denstity);
     }
 
     public static int getScreenWidth(Context context) {

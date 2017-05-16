@@ -13,7 +13,7 @@ public class SystemUtil {
         String processName = null;
 
         // ActivityManager
-        ActivityManager am = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
         while (true) {
             for (ActivityManager.RunningAppProcessInfo info : am.getRunningAppProcesses()) {

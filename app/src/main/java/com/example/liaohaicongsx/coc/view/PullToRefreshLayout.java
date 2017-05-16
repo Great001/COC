@@ -33,42 +33,42 @@ public class PullToRefreshLayout extends LinearLayout {
     public static final int MSG_REFRESH_ERROR = 1000;
     public static final int MSG_FINISH_REFRESH = 1002;
 
-    private static final int touchSlop = 10;
+    private static final int TOUCH_SLOP = 10;
 
-    private Context context;
+    private Context mContext;
 
-    private View headView;
-    private TextView tvRefreshStatus;
-    private ProgressBar pbLoading;
+    private View mHeadView;
+    private TextView mTvRefreshStatus;
+    private ProgressBar mPbLoading;
 
-    private ListView listView;
+    private ListView mListView;
 
-    private int headerHeight;  //headView的高度
+    private int mHeaderHeight;  //headView的高度
     private int maxTopMargin;
     private int minTopMargin;
-    private MarginLayoutParams headerParams;
+    private MarginLayoutParams mMarginLayoutParams;
 
-    private boolean isFirstLayout = true;
+    private boolean mIsFirstLayout = true;
 
-    private int fromY;
-    private int toY;
-    private int disY;
+    private int mFromY;
+    private int mToY;
+    private int mDisY;
 
-    private int refreshStatus = STATUS_FINISH_REFRESH;
+    private int mRefreshStatus = STATUS_FINISH_REFRESH;
 
-    private OnRefreshListener onRefreshListener;
+    private OnRefreshListener mOnRefreshListener;
 
-    private static final int refreshTimeOut = 5000;
+    public static final int TIME_OUT = 5000;
     //错误处理，主要针对网络错误
-    private Handler handler = new Handler(Looper.getMainLooper()) {
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_REFRESH_ERROR:
-                    if (refreshStatus == STATUS_REFRESHING) {
-                        tvRefreshStatus.setText(R.string.refresh_failed);
-                        pbLoading.setVisibility(GONE);
-                        handler.sendEmptyMessageDelayed(MSG_FINISH_REFRESH, 2000);
+                    if (mRefreshStatus == STATUS_REFRESHING) {
+                        mTvRefreshStatus.setText(R.string.refresh_failed);
+                        mPbLoading.setVisibility(GONE);
+                        mHandler.sendEmptyMessageDelayed(MSG_FINISH_REFRESH, 2000);
                     }
                     break;
                 case MSG_FINISH_REFRESH:
@@ -91,28 +91,28 @@ public class PullToRefreshLayout extends LinearLayout {
 
     public PullToRefreshLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.context = context;
+        this.mContext = context;
         setOrientation(VERTICAL);
 
-        headView = LayoutInflater.from(context).inflate(R.layout.layout_header_view, null);
-        tvRefreshStatus = (TextView) headView.findViewById(R.id.tv_refresh_status);
-        pbLoading = (ProgressBar) headView.findViewById(R.id.pb_loading);
+        mHeadView = LayoutInflater.from(context).inflate(R.layout.layout_header_view, null);
+        mTvRefreshStatus = (TextView) mHeadView.findViewById(R.id.tv_refresh_status);
+        mPbLoading = (ProgressBar) mHeadView.findViewById(R.id.pb_loading);
 
-        addView(headView);
+        addView(mHeadView);
     }
 
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if (isFirstLayout) {
-            headerHeight = headView.getHeight();
-            maxTopMargin = headerHeight + DimenUtil.dp2px(context, 25);
-            minTopMargin = -headerHeight;
-            headerParams = (MarginLayoutParams) headView.getLayoutParams();
-            headerParams.topMargin = -headerHeight;  //隐藏headView
-            listView = (ListView) getChildAt(1);  //获取listView实例
-            isFirstLayout = false;
+        if (mIsFirstLayout) {
+            mHeaderHeight = mHeadView.getHeight();
+            maxTopMargin = mHeaderHeight + DimenUtil.dp2px(mContext, 25);
+            minTopMargin = -mHeaderHeight;
+            mMarginLayoutParams = (MarginLayoutParams) mHeadView.getLayoutParams();
+            mMarginLayoutParams.topMargin = -mHeaderHeight;  //隐藏headView
+            mListView = (ListView) getChildAt(1);  //获取listView实例
+            mIsFirstLayout = false;
         }
     }
 
@@ -121,14 +121,14 @@ public class PullToRefreshLayout extends LinearLayout {
         if (canPull()) {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:   //这里不能拦截，否则会影响listView的滑动
-                    fromY = (int) ev.getRawY();
-                    headerParams = (MarginLayoutParams) headView.getLayoutParams();
+                    mFromY = (int) ev.getRawY();
+                    mMarginLayoutParams = (MarginLayoutParams) mHeadView.getLayoutParams();
                     Log.d(TAG, "actino down");
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    toY = (int) ev.getRawY();
-                    disY = toY - fromY;
-                    if (disY > 0) {
+                    mToY = (int) ev.getRawY();
+                    mDisY = mToY - mFromY;
+                    if (mDisY > 0) {
                         return true;
                     }
                     break;
@@ -136,7 +136,7 @@ public class PullToRefreshLayout extends LinearLayout {
                     break;
             }
         }
-        if (refreshStatus == STATUS_REFRESHING) {
+        if (mRefreshStatus == STATUS_REFRESHING) {
             return true;
         }
         return super.onInterceptTouchEvent(ev);
@@ -148,45 +148,45 @@ public class PullToRefreshLayout extends LinearLayout {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                fromY = (int) event.getRawY();
+                mFromY = (int) event.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                toY = (int) event.getRawY();
-                disY = toY - fromY;
-                fromY = toY;
-                if (disY < touchSlop) {
+                mToY = (int) event.getRawY();
+                mDisY = mToY - mFromY;
+                mFromY = mToY;
+                if (mDisY < TOUCH_SLOP) {
                     break;
                 }
-                if (refreshStatus != STATUS_REFRESHING) {
-                    headerParams.topMargin += (disY * 0.4);
-                    if (headerParams.topMargin < 15) {
-                        tvRefreshStatus.setText(R.string.pull_to_refresh);
-                        refreshStatus = STATUS_PULL_TO_REFRESH;
+                if (mRefreshStatus != STATUS_REFRESHING) {
+                    mMarginLayoutParams.topMargin += mDisY * 0.4;
+                    if (mMarginLayoutParams.topMargin < 15) {
+                        mTvRefreshStatus.setText(R.string.pull_to_refresh);
+                        mRefreshStatus = STATUS_PULL_TO_REFRESH;
                     } else {
-                        tvRefreshStatus.setText(R.string.release_to_refresh);
-                        refreshStatus = STATUS_RELEASE_TO_REFRESH;
+                        mTvRefreshStatus.setText(R.string.release_to_refresh);
+                        mRefreshStatus = STATUS_RELEASE_TO_REFRESH;
                     }
 
-                    if (headerParams.topMargin >= maxTopMargin) {
-                        headerParams.topMargin = maxTopMargin;
-                    } else if (headerParams.topMargin <= minTopMargin) {
-                        headerParams.topMargin = minTopMargin;
+                    if (mMarginLayoutParams.topMargin >= maxTopMargin) {
+                        mMarginLayoutParams.topMargin = maxTopMargin;
+                    } else if (mMarginLayoutParams.topMargin <= minTopMargin) {
+                        mMarginLayoutParams.topMargin = minTopMargin;
                     }
 
-                    headView.setLayoutParams(headerParams);
+                    mHeadView.setLayoutParams(mMarginLayoutParams);
                 }
                 break;
             case MotionEvent.ACTION_UP:
             default:
-                if (refreshStatus == STATUS_PULL_TO_REFRESH) {
-                    headerParams.topMargin = -headerHeight;
-                    headView.setLayoutParams(headerParams);
-                    refreshStatus = STATUS_FINISH_REFRESH;
-                } else if (refreshStatus == STATUS_RELEASE_TO_REFRESH) {
-                    pbLoading.setVisibility(VISIBLE);
-                    tvRefreshStatus.setText(R.string.refreshing);
-                    refreshStatus = STATUS_REFRESHING;
-//                        handler.sendEmptyMessageAtTime(MSG_REFRESH_ERROR, SystemClock.uptimeMillis() + refreshTimeOut);
+                if (mRefreshStatus == STATUS_PULL_TO_REFRESH) {
+                    mMarginLayoutParams.topMargin = -mHeaderHeight;
+                    mHeadView.setLayoutParams(mMarginLayoutParams);
+                    mRefreshStatus = STATUS_FINISH_REFRESH;
+                } else if (mRefreshStatus == STATUS_RELEASE_TO_REFRESH) {
+                    mPbLoading.setVisibility(VISIBLE);
+                    mTvRefreshStatus.setText(R.string.refreshing);
+                    mRefreshStatus = STATUS_REFRESHING;
+//                        mHandler.sendEmptyMessageAtTime(MSG_REFRESH_ERROR, SystemClock.uptimeMillis() + TIME_OUT);
                     doRefresh();
                 }
                 break;
@@ -195,10 +195,10 @@ public class PullToRefreshLayout extends LinearLayout {
     }
 
     public boolean canPull() {
-        if (listView.getChildCount() != 0) {
-            if (listView.getFirstVisiblePosition() == 0) {
-                int firstViewTop = listView.getChildAt(0).getTop();
-                return firstViewTop == listView.getTop() && refreshStatus != STATUS_REFRESHING;
+        if (mListView.getChildCount() != 0) {
+            if (mListView.getFirstVisiblePosition() == 0) {
+                int firstViewTop = mListView.getChildAt(0).getTop();
+                return firstViewTop == mListView.getTop() && mRefreshStatus != STATUS_REFRESHING;
             } else {
                 return false;
             }
@@ -209,33 +209,39 @@ public class PullToRefreshLayout extends LinearLayout {
     }
 
     public void doRefresh() {
-        if (onRefreshListener != null) {
-            onRefreshListener.onRefresh();
+        if (mOnRefreshListener != null) {
+            mOnRefreshListener.onRefresh();
         }
     }
 
     public void refreshComplete() {
-        pbLoading.setVisibility(GONE);
-        headerParams.topMargin = -headerHeight;
-        headView.setLayoutParams(headerParams);
-        refreshStatus = STATUS_FINISH_REFRESH;
+        mPbLoading.setVisibility(GONE);
+        mMarginLayoutParams.topMargin = -mHeaderHeight;
+        mHeadView.setLayoutParams(mMarginLayoutParams);
+        mRefreshStatus = STATUS_FINISH_REFRESH;
     }
 
     public void refreshError() {
-        handler.sendEmptyMessage(MSG_REFRESH_ERROR);
+        mHandler.sendEmptyMessage(MSG_REFRESH_ERROR);
     }
+
 
 
     public int getRefreshStatus() {
-        return refreshStatus;
+        return mRefreshStatus;
     }
 
+    /**
+     * 更新回调接口
+     *
+     * @return
+     */
     public interface OnRefreshListener {
         void onRefresh();
     }
 
     public void setOnRefreshLister(OnRefreshListener listener) {
-        onRefreshListener = listener;
+        mOnRefreshListener = listener;
     }
 
 }

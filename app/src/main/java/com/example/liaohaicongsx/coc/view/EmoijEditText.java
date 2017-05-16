@@ -11,11 +11,11 @@ import android.widget.EditText;
 public class EmoijEditText extends EditText {
 
     public EmoijEditText(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public EmoijEditText(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public EmoijEditText(Context context, AttributeSet attrs, int defStyleAttr) {

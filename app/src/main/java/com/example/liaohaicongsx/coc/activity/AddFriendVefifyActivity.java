@@ -1,6 +1,5 @@
 package com.example.liaohaicongsx.coc.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -11,11 +10,14 @@ import com.netease.nimlib.sdk.msg.model.SystemMessage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 好友认证页面
+ */
 public class AddFriendVefifyActivity extends BaseActivity {
 
     private ListView mLvNewFriends;
     private NewFriendAdapter mAdapter;
-    private List<SystemMessage> systemMsgs = new ArrayList<>();
+    private List<SystemMessage> mSystemMessages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +25,13 @@ public class AddFriendVefifyActivity extends BaseActivity {
         setContentView(R.layout.activity_add_friend_vefify);
 
         SystemMessage message = (SystemMessage) getIntent().getSerializableExtra("message");
-        systemMsgs.add(message);
+        mSystemMessages.add(message);
 
 
         mLvNewFriends = (ListView) findViewById(R.id.lv_new_friends);
         mAdapter = new NewFriendAdapter(this);
         mLvNewFriends.setAdapter(mAdapter);
-        mAdapter.setData(systemMsgs);
+        mAdapter.setData(mSystemMessages);
         mAdapter.notifyDataSetChanged();
     }
 

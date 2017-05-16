@@ -12,6 +12,9 @@ import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.MusicAdapter;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
 
+/**
+ * 音乐选择页面
+ */
 public class SelectMusicActivity extends BaseActivity {
 
     private ListView mLvMusic;

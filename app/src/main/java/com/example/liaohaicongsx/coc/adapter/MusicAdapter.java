@@ -14,6 +14,10 @@ import com.example.liaohaicongsx.coc.R;
 /**
  * Created by liaohaicongsx on 2017/05/08.
  */
+
+/**
+ * 本地音乐列表适配器
+ */
 public class MusicAdapter extends BaseAdapter {
 
     private Context mCtx;
@@ -62,19 +66,22 @@ public class MusicAdapter extends BaseAdapter {
         }
         mCursor.moveToPosition(position);
         if (!mCursor.isAfterLast()) {
-            holder.tvArtist.setText(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
-            holder.tvName.setText(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)));
+            holder.mTvArtist.setText(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+            holder.mTvName.setText(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)));
         }
         return convertView;
     }
 
+    /**
+     * 音乐item
+     */
     class MusicViewHolder {
-        TextView tvName;
-        TextView tvArtist;
+        TextView mTvName;
+        TextView mTvArtist;
 
         MusicViewHolder(View itemView) {
-            tvName = (TextView) itemView.findViewById(R.id.tv_music_name);
-            tvArtist = (TextView) itemView.findViewById(R.id.tv_music_artist);
+            mTvName = (TextView) itemView.findViewById(R.id.tv_music_name);
+            mTvArtist = (TextView) itemView.findViewById(R.id.tv_music_artist);
         }
 
     }

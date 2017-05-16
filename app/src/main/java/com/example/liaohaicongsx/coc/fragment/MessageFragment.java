@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.RecentContactAdapter;
@@ -15,10 +14,11 @@ import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.model.RecentContact;
 
-import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * 消息页面
+ */
 public class MessageFragment extends Fragment {
 
     private ListView mLvRecentContact;

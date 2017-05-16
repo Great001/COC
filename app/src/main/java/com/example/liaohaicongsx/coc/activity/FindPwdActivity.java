@@ -1,10 +1,12 @@
 package com.example.liaohaicongsx.coc.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.liaohaicongsx.coc.R;
 
+/**
+ * 找回密码页面
+ */
 public class FindPwdActivity extends BaseActivity {
 
     @Override

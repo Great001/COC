@@ -16,6 +16,9 @@ import com.netease.nimlib.sdk.RequestCallback;
 import com.netease.nimlib.sdk.auth.AuthService;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 
+/**
+ * 登录页面
+ */
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     public static final String TAG = "LoginActivity";

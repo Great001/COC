@@ -5,14 +5,13 @@ package com.example.liaohaicongsx.coc.util;
  */
 public class HtmlUtil {
 
-    public static void toHtml(String msg){
+    public static void toHtml(String msg) {
 
     }
 
-    public static void fromHtml(){
+    public static void fromHtml() {
 
     }
-
 
 
 }

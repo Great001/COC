@@ -15,6 +15,9 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+/**
+ * 注册页面
+ */
 public class RegisterActivity extends BaseActivity {
 
     public static final String TAG = "RegisterActivity";
@@ -39,7 +42,7 @@ public class RegisterActivity extends BaseActivity {
                 String nickname = mEtNickName.getText().toString().trim();
                 String password = mEtPwd.getText().toString().trim();
                 String account = String.valueOf(System.currentTimeMillis());
-                RetrofitClient.getInstance().userRegister(account,nickname)
+                RetrofitClient.getInstance().userRegister(account, nickname)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<ResponseUser>() {
@@ -55,10 +58,10 @@ public class RegisterActivity extends BaseActivity {
 
                             @Override
                             public void onNext(ResponseUser responseUser) {
-                                Log.d(TAG,responseUser.toString());
+                                Log.d(TAG, responseUser.toString());
                                 String token = responseUser.getInfo().getToken();
                                 String accid = responseUser.getInfo().getAccid();
-                                NavigationUtil.navigateToLoginPage(RegisterActivity.this,accid,token);
+                                NavigationUtil.navigateToLoginPage(RegisterActivity.this, accid, token);
                                 RegisterActivity.this.finish();
                             }
                         });

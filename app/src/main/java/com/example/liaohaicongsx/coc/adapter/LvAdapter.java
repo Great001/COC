@@ -19,23 +19,23 @@ import java.util.List;
  */
 public class LvAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<String> imgUrls = new ArrayList<>();
+    private Context mContext;
+    private List<String> mListImgUrl = new ArrayList<>();
 
     public LvAdapter(Context context, List<String> list) {
-        this.context = context;
-        imgUrls = list;
+        this.mContext = context;
+        mListImgUrl = list;
     }
 
 
     @Override
     public int getCount() {
-        return imgUrls.size();
+        return mListImgUrl.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return imgUrls.get(position);
+        return mListImgUrl.get(position);
     }
 
     @Override
@@ -47,24 +47,27 @@ public class LvAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         MyViewHolder holder = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.lv_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.lv_item, null);
             holder = new MyViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (MyViewHolder) convertView.getTag();
         }
-        holder.tvNum.setText(position + "");
-        MyImageLoader.getInstance(context.getApplicationContext()).displayImage(imgUrls.get(position), holder.ivImg);
+        holder.mTvNum.setText(position + "");
+        MyImageLoader.getInstance(mContext.getApplicationContext()).displayImage(mListImgUrl.get(position), holder.mIvTest);
         return convertView;
     }
 
+    /**
+     * 图片item
+     */
     class MyViewHolder {
-        TextView tvNum;
-        ImageView ivImg;
+        TextView mTvNum;
+        ImageView mIvTest;
 
         MyViewHolder(View itemView) {
-            tvNum = (TextView) itemView.findViewById(R.id.tv_test);
-            ivImg = (ImageView) itemView.findViewById(R.id.iv_test);
+            mTvNum = (TextView) itemView.findViewById(R.id.tv_test);
+            mIvTest = (ImageView) itemView.findViewById(R.id.iv_test);
         }
 
     }

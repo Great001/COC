@@ -21,7 +21,7 @@ public class UserModel {
 
     public static final String TAG = "UserModel";
 
-    private volatile static UserModel instance;
+    private volatile static UserModel sInstance;
 
     public static final String SP_USER = "userinfo";
 
@@ -33,12 +33,12 @@ public class UserModel {
     private UserInfo mUserInfo;
 
     public static UserModel getInstance() {
-        if (instance == null) {
+        if (sInstance == null) {
             synchronized (UserModel.class) {
-                instance = new UserModel();
+                sInstance = new UserModel();
             }
         }
-        return instance;
+        return sInstance;
     }
 
     public LoginInfo getLoginInfo(Context context) {

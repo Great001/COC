@@ -47,10 +47,10 @@ public class MusicPlayService extends Service {
     private ImageView mIvMusic;
     private ShapeDrawable mProgressShape;
 
-    private boolean isFwShow = false;
-    private boolean isEnd;
+    private boolean mIsFwShow = false;
+    private boolean mIsEnd;
 
-    private Handler handler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -70,7 +70,7 @@ public class MusicPlayService extends Service {
         super.onCreate();
         initMusicPlayFw();
         mMediaPlayer = new MediaPlayer();
-        isEnd = false;
+        mIsEnd = false;
     }
 
     @Override
@@ -131,9 +131,9 @@ public class MusicPlayService extends Service {
      * 显示音乐播放悬浮窗
      */
     public void showFw() {
-        if (!isFwShow) {
+        if (!mIsFwShow) {
             mWm.addView(mIvMusic, mMusicViewParams);
-            isFwShow = true;
+            mIsFwShow = true;
         }
     }
 
@@ -141,9 +141,9 @@ public class MusicPlayService extends Service {
      * 隐藏音乐播放悬浮窗
      */
     public void hideFw() {
-        if (isFwShow) {
+        if (mIsFwShow) {
             mWm.removeView(mIvMusic);
-            isFwShow = false;
+            mIsFwShow = false;
         }
     }
 
@@ -158,7 +158,7 @@ public class MusicPlayService extends Service {
      */
     private void startPlayMusic() {
         try {
-            if (!isEnd && mMediaPlayer.isPlaying()) {
+            if (!mIsEnd && mMediaPlayer.isPlaying()) {
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
                 stopShowProcess();
@@ -173,7 +173,7 @@ public class MusicPlayService extends Service {
                     showFw();
                     mMediaPlayer.start();
                     startShowProcess();
-                    isEnd = false;
+                    mIsEnd = false;
                 }
             });
             mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -181,7 +181,7 @@ public class MusicPlayService extends Service {
                 public void onCompletion(MediaPlayer mp) {
                     mMediaPlayer.stop();
                     mMediaPlayer.release();
-                    isEnd = true;
+                    mIsEnd = true;
                     stopSelf();
                 }
             });
@@ -194,7 +194,7 @@ public class MusicPlayService extends Service {
      * 开始进度条显示
      */
     public void startShowProcess() {
-        handler.sendEmptyMessage(MSG_PROGRESS_UPDATE);
+        mHandler.sendEmptyMessage(MSG_PROGRESS_UPDATE);
         //若不立即发送会出现黑边的
     }
 
@@ -202,7 +202,7 @@ public class MusicPlayService extends Service {
      * 关闭进度条显示
      */
     public void stopShowProcess() {
-        handler.removeMessages(MSG_PROGRESS_UPDATE);
+        mHandler.removeMessages(MSG_PROGRESS_UPDATE);
     }
 
     /**
@@ -231,7 +231,7 @@ public class MusicPlayService extends Service {
                 }
             });
             if (sweepAngel <= 360) {
-                handler.sendEmptyMessageDelayed(MSG_PROGRESS_UPDATE, PROGRESS_UPDATE_INTERVAL);
+                mHandler.sendEmptyMessageDelayed(MSG_PROGRESS_UPDATE, PROGRESS_UPDATE_INTERVAL);
             }
         }
     }
@@ -239,7 +239,7 @@ public class MusicPlayService extends Service {
 
     @Override
     public void onDestroy() {
-        if (!isEnd && mMediaPlayer.isPlaying()) {
+        if (!mIsEnd && mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
         }

@@ -40,6 +40,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 聊天界面
+ */
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String ACCOUNT = "account";
@@ -78,7 +81,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setTitle(mNick);
         }
-        AppActivityManager.getInstance().push(this);
+        AppActivityManager.getAppActivityManager().push(this);
 
         initView();
 
@@ -99,7 +102,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         mIvMusic.setOnClickListener(this);
 
         mAdapter = new ChatAdapter(this);
-        mAdapter.setMessages(mMsgList);
+        mAdapter.setIMMessages(mMsgList);
         mLvChat.setAdapter(mAdapter);
 
         mEtMsg.addTextChangedListener(new TextWatcher() {
@@ -149,7 +152,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             public void sendMsg(String msg) {
                 final IMMessage message = MessageBuilder.createTextMessage(mAccount, SessionTypeEnum.P2P, msg);
                 mMsgList.add(message);
-                mAdapter.setMessages(mMsgList);
+                mAdapter.setIMMessages(mMsgList);
                 mAdapter.notifyDataSetChanged();
                 mEtMsg.setText("");
                 NIMClient.getService(MsgService.class).sendMessage(message, true).setCallback(new RequestCallbackWrapper<Void>() {
@@ -175,10 +178,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     if (message.getMsgType() == MsgTypeEnum.file && !isFileAttachmentExists(message)) {
                         //自动下载附件文件
                         NIMClient.getService(MsgService.class).downloadAttachment(message, true);
-                   }
-               }
+                    }
+                }
                 mMsgList.addAll(imMessages);
-                mAdapter.setMessages(mMsgList);
+                mAdapter.setIMMessages(mMsgList);
                 mAdapter.notifyDataSetChanged();
                 mLvChat.setSelection(mAdapter.getCount() - 1);
             }
@@ -211,7 +214,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResult(int code, List<IMMessage> result, Throwable exception) {
                 mMsgList.addAll(0, result);
-                mAdapter.setMessages(mMsgList);
+                mAdapter.setIMMessages(mMsgList);
                 mAdapter.notifyDataSetChanged();
                 mLvChat.setSelection(mAdapter.getCount() - 1);
             }
@@ -228,7 +231,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        AppActivityManager.getInstance().pop();
+        AppActivityManager.getAppActivityManager().pop();
         super.onBackPressed();
     }
 
@@ -325,7 +328,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             mAdapter.notifyDataSetChanged();
             mLvChat.setSelection(mAdapter.getCount() - 1);
             //监听文件附件消息发送状态
-            NIMClient.getService(MsgServiceObserve.class).observeMsgStatus(statusObserver,true);
+            NIMClient.getService(MsgServiceObserve.class).observeMsgStatus(statusObserver, true);
         }
     }
 }

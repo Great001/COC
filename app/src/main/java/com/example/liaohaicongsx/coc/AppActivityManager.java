@@ -10,57 +10,57 @@ import java.util.Stack;
  */
 public class AppActivityManager {
 
-    private volatile static AppActivityManager instance;
+    private volatile static AppActivityManager sAppActivityManager;
 
-    private Stack<SoftReference<Activity>> stack = new Stack<>();
+    private Stack<SoftReference<Activity>> mStack = new Stack<>();
 
-    public static AppActivityManager getInstance() {
-        if (instance == null) {
+    public static AppActivityManager getAppActivityManager() {
+        if (sAppActivityManager == null) {
             synchronized (AppActivityManager.class) {
-                instance = new AppActivityManager();
+                sAppActivityManager = new AppActivityManager();
             }
         }
-        return instance;
+        return sAppActivityManager;
     }
 
     public int getStackEntryCount() {
-        return stack.size();
+        return mStack.size();
     }
 
     public void push(Activity activity) {
         if (activity != null) {
             SoftReference<Activity> ref = new SoftReference<Activity>(activity);
-            stack.push(ref);
+            mStack.push(ref);
         }
     }
 
     public void pop() {
-        stack.pop();
+        mStack.pop();
     }
 
 
     public void remove(Activity activity) {
-        for (SoftReference<Activity> ref : stack) {
+        for (SoftReference<Activity> ref : mStack) {
             if (ref != null && ref.get() == activity) {
-                stack.remove(ref);
+                mStack.remove(ref);
             }
         }
     }
 
     public Activity topActivity() {
-        while (!stack.isEmpty()) {
-            if (stack.peek() != null && stack.peek().get() != null) {
+        while (!mStack.isEmpty()) {
+            if (mStack.peek() != null && mStack.peek().get() != null) {
                 break;
             } else {
-                stack.pop();
+                mStack.pop();
             }
         }
-        return stack.peek().get();
+        return mStack.peek().get();
     }
 
 
     public Activity findActivity(Activity activity) {
-        for (SoftReference<Activity> ref : stack) {
+        for (SoftReference<Activity> ref : mStack) {
             if (ref != null && ref.get() == activity) {
                 return ref.get();
             }
@@ -70,11 +70,11 @@ public class AppActivityManager {
 
 
     public void clear() {
-        for (SoftReference<Activity> ref : stack) {
+        for (SoftReference<Activity> ref : mStack) {
             if (ref != null && ref.get() != null) {
                 ref.get().finish();
             }
-            stack.pop();
+            mStack.pop();
         }
     }
 

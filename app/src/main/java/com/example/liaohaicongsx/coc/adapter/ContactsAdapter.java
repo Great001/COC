@@ -21,31 +21,31 @@ import java.util.List;
  */
 public class ContactsAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<NimUserInfo> userInfos = new ArrayList<>();
+    private Context mContext;
+    private List<NimUserInfo> mUserInfoList = new ArrayList<>();
 
-    public ContactsAdapter(Context context,List<NimUserInfo> list){
-        this.context = context;
-        userInfos = list;
+    public ContactsAdapter(Context context, List<NimUserInfo> list) {
+        this.mContext = context;
+        mUserInfoList = list;
     }
 
 
-    public ContactsAdapter(Context context){
-        this.context = context;
+    public ContactsAdapter(Context context) {
+        this.mContext = context;
     }
 
-    public void setUserInfos(List<NimUserInfo> list){
-        userInfos = list;
+    public void setUserInfoList(List<NimUserInfo> list) {
+        mUserInfoList = list;
     }
 
     @Override
     public int getCount() {
-        return userInfos.size();
+        return mUserInfoList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return userInfos.get(position);
+        return mUserInfoList.get(position);
     }
 
     @Override
@@ -56,38 +56,41 @@ public class ContactsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ContactViewHolder holder = null;
-        if(convertView == null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.lv_contacts_item,null);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.lv_contacts_item, null);
             holder = new ContactViewHolder(convertView);
             convertView.setTag(holder);
-        }else{
+        } else {
             holder = (ContactViewHolder) convertView.getTag();
         }
-        final NimUserInfo user = userInfos.get(position);
+        final NimUserInfo user = mUserInfoList.get(position);
         final String account = user.getAccount();
         final String name = user.getName();
         String signature = user.getSignature();
 
-        holder.tvName.setText(TextUtils.isEmpty(name) ? "海阔天空" : name);
-        holder.tvSign.setText(TextUtils.isEmpty(signature)?"海阔凭鱼跃，天高任鸟飞":signature);
+        holder.mTvName.setText(TextUtils.isEmpty(name) ? "海阔天空" : name);
+        holder.mTvSign.setText(TextUtils.isEmpty(signature) ? "海阔凭鱼跃，天高任鸟飞" : signature);
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavigationUtil.navigateToChatPage(context,account,name);
+                NavigationUtil.navigateToChatPage(mContext, account, name);
             }
         });
         return convertView;
     }
 
-    class ContactViewHolder{
-        ImageView ivAvatar;
-        TextView tvName;
-        TextView tvSign;
+    /**
+     * 联系人item
+     */
+    class ContactViewHolder {
+        ImageView mIvAvatar;
+        TextView mTvName;
+        TextView mTvSign;
 
-        public ContactViewHolder(View itemView){
-            ivAvatar = (ImageView) itemView.findViewById(R.id.iv_contacts_avatar);
-            tvName = (TextView) itemView.findViewById(R.id.tv_contacts_name);
-            tvSign = (TextView) itemView.findViewById(R.id.tv_contacts_signature);
+        public ContactViewHolder(View itemView) {
+            mIvAvatar = (ImageView) itemView.findViewById(R.id.iv_contacts_avatar);
+            mTvName = (TextView) itemView.findViewById(R.id.tv_contacts_name);
+            mTvSign = (TextView) itemView.findViewById(R.id.tv_contacts_signature);
         }
     }
 

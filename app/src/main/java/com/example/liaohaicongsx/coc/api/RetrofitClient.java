@@ -26,7 +26,7 @@ public class RetrofitClient {
 
     public static final String BASE_URL = "https://api.netease.im/nimserver/";
 
-    private volatile static RetrofitClient instance;
+    private volatile static RetrofitClient sInstance;
 
     public Retrofit retrofit;
 
@@ -39,12 +39,12 @@ public class RetrofitClient {
     }
 
     public static RetrofitClient getInstance() {
-        if (instance == null) {
+        if (sInstance == null) {
             synchronized (RetrofitClient.class) {
-                instance = new RetrofitClient();
+                sInstance = new RetrofitClient();
             }
         }
-        return instance;
+        return sInstance;
     }
 
     //用户注册
