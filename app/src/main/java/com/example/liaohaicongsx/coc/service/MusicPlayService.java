@@ -160,10 +160,10 @@ public class MusicPlayService extends Service {
         try {
             if (!mIsEnd && mMediaPlayer.isPlaying()) {
                 mMediaPlayer.stop();
-                mMediaPlayer.release();
+                //必须调用reset重置下，否则包IllegalStateException
+                mMediaPlayer.reset();
                 stopShowProcess();
             }
-            mMediaPlayer = new MediaPlayer();  //必须这样，否则就报IllegalStateException
             mMediaPlayer.setDataSource(mPath);
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.prepareAsync();
@@ -180,7 +180,6 @@ public class MusicPlayService extends Service {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     mMediaPlayer.stop();
-                    mMediaPlayer.release();
                     mIsEnd = true;
                     stopSelf();
                 }
@@ -239,11 +238,11 @@ public class MusicPlayService extends Service {
 
     @Override
     public void onDestroy() {
-        if (!mIsEnd && mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
+            mMediaPlayer = null;
         }
-        mMediaPlayer = null;
         hideFw();
         stopShowProcess();
         super.onDestroy();

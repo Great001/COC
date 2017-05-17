@@ -240,4 +240,6 @@ public class CocApplication extends Application {
         String processName = SystemUtil.getProcessName(context);
         return packageName.equals(processName);
     }
+
+
 }

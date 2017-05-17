@@ -5,11 +5,13 @@ import android.content.Intent;
 
 import com.example.liaohaicongsx.coc.activity.AddFriendActivity;
 import com.example.liaohaicongsx.coc.activity.ChatActivity;
+import com.example.liaohaicongsx.coc.activity.EditUserInfoActivity;
 import com.example.liaohaicongsx.coc.activity.FindPwdActivity;
 import com.example.liaohaicongsx.coc.activity.LoginActivity;
 import com.example.liaohaicongsx.coc.activity.MainActivity;
 import com.example.liaohaicongsx.coc.activity.RegisterActivity;
 import com.example.liaohaicongsx.coc.activity.SelectMusicActivity;
+import com.example.liaohaicongsx.coc.activity.UserInfoActivity;
 
 /**
  * Created by liaohaicongsx on 2017/04/13.
@@ -65,6 +67,18 @@ public class NavigationUtil {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(ChatActivity.MSG_MUSIC_PATH, path);
         intent.putExtra(ChatActivity.MSG_MUSIC_NAME, name);
+        context.startActivity(intent);
+    }
+
+
+    public static void navigateToUserInfoPage(Context context) {
+        Intent intent = new Intent(context, UserInfoActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void navigateToEditUserInfoPage(Context context, String item) {
+        Intent intent = new Intent(context, EditUserInfoActivity.class);
+        intent.putExtra(EditUserInfoActivity.EDIT_ITEM, item);
         context.startActivity(intent);
     }
 

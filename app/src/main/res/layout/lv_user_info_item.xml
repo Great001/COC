@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.liaohaicongsx.coc.view.SwipeLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="生日"/>
+
+        <TextView
+            android:id="@+id/tv_item_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical|right"
+            android:text="10月"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_user_info_edit"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:background="@color/app_main_color"
+        android:gravity="center"
+        android:text="编辑"
+        android:textColor="@color/white"/>
+
+</com.example.liaohaicongsx.coc.view.SwipeLinearLayout>
