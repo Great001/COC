@@ -19,7 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getTitle());
+            actionBar.setTitle(getPageTitle());
         }
 
         AppActivityManager.getAppActivityManager().push(this);

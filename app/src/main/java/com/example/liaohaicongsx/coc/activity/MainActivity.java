@@ -11,8 +11,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.liaohaicongsx.coc.AppActivityManager;
@@ -38,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup mRgSelectTab;
     private TextView mTvNickName;
 
+    private ListView mLvUserProfile;
+    private RelativeLayout mRlUserCard;
+
     private int mCurrentItem;
 
     @Override
@@ -60,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
         mDlMainPage = (DrawerLayout) findViewById(R.id.dl_main_page);
         mRgSelectTab = (RadioGroup) findViewById(R.id.rg_tabs_select);
         mVpTabs = (ViewPager) findViewById(R.id.vp_main_tabs);
+        mLvUserProfile = (ListView) findViewById(R.id.lv_user_profile);
+        mRlUserCard = (RelativeLayout) findViewById(R.id.rl_user_card);
+        mRlUserCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigationUtil.navigateToUserInfoPage(MainActivity.this);
+                mDlMainPage.closeDrawer(Gravity.LEFT);
+            }
+        });
 
         mTvNickName = (TextView) findViewById(R.id.tv_user_nickname);
         mTvNickName.setText(UserModel.getInstance().getUserInfo().getName());
@@ -76,6 +91,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+                int checkId = R.id.rbtn_message;
+                switch (position) {
+                    case 0:
+                        checkId = R.id.rbtn_message;
+                        break;
+                    case 1:
+                        checkId = R.id.rbtn_contacts;
+                        break;
+                    case 2:
+                        checkId = R.id.rbtn_dynamic;
+                        break;
+                    default:
+                        break;
+                }
+                mRgSelectTab.check(checkId);
 
                 ((RadioButton) mRgSelectTab.getChildAt(mCurrentItem)).setTextColor(getResources().getColor(R.color.black));
                 ((RadioButton) mRgSelectTab.getChildAt(position)).setTextColor(getResources().getColor(R.color.colorPrimary));

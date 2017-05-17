@@ -67,6 +67,22 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean mIsForground;
 
+    private Observer<List<IMMessage>> mIncomingMsgObserver = new Observer<List<IMMessage>>() {
+        @Override
+        public void onEvent(List<IMMessage> imMessages) {
+            for (IMMessage message : imMessages) {
+                if (message.getMsgType() == MsgTypeEnum.file && !isFileAttachmentExists(message)) {
+                    //自动下载附件文件
+                    NIMClient.getService(MsgService.class).downloadAttachment(message, true);
+                }
+            }
+            mMsgList.addAll(imMessages);
+            mAdapter.setIMMessages(mMsgList);
+            mAdapter.notifyDataSetChanged();
+            mLvChat.setSelection(mAdapter.getCount() - 1);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,22 +187,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
      * 监听处理收到的IM消息
      */
     public void observeRecvMessage() {
-        Observer<List<IMMessage>> incomingMsgObserver = new Observer<List<IMMessage>>() {
-            @Override
-            public void onEvent(List<IMMessage> imMessages) {
-                for (IMMessage message : imMessages) {
-                    if (message.getMsgType() == MsgTypeEnum.file && !isFileAttachmentExists(message)) {
-                        //自动下载附件文件
-                        NIMClient.getService(MsgService.class).downloadAttachment(message, true);
-                    }
-                }
-                mMsgList.addAll(imMessages);
-                mAdapter.setIMMessages(mMsgList);
-                mAdapter.notifyDataSetChanged();
-                mLvChat.setSelection(mAdapter.getCount() - 1);
-            }
-        };
-        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(incomingMsgObserver, true);
+        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(mIncomingMsgObserver, true);
     }
 
 
@@ -330,5 +331,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             //监听文件附件消息发送状态
             NIMClient.getService(MsgServiceObserve.class).observeMsgStatus(statusObserver, true);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(mIncomingMsgObserver, false);
+        super.onDestroy();
     }
 }

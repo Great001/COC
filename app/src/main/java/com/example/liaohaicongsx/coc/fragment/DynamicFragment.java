@@ -61,7 +61,7 @@ public class DynamicFragment extends Fragment implements PullToRefreshLayout.OnR
             public void run() {
                 mPrflTest.refreshComplete();
             }
-        }, 3000);
+        }, 1500);
 
     }
 }
