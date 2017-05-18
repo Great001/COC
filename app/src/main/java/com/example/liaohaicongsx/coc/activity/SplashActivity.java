@@ -11,11 +11,15 @@ import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
+import com.example.liaohaicongsx.coc.view.MatrixImageView;
 
 /**
  * 启动页
  */
 public class SplashActivity extends AppCompatActivity {
+
+    public static final String TAG = "SplashActivity";
+
     /**
      * 进入首页按钮
      */
@@ -24,6 +28,8 @@ public class SplashActivity extends AppCompatActivity {
      * 展示广告
      */
     private ImageView mIvAd;
+
+    private MatrixImageView mIvAppLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,9 @@ public class SplashActivity extends AppCompatActivity {
 
         mBtnEnter = (Button) findViewById(R.id.btn_enter_main_page);
         mIvAd = (ImageView) findViewById(R.id.iv_splash);
+        mIvAppLogo = (MatrixImageView) findViewById(R.id.iv_app_logo);
+
+//        MyImageLoader.getInstance(getApplicationContext()).displayImage("http://i2.muimg.com/1949/b490c083259a5dca.jpg",mIvAd);
 
         mBtnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,5 +59,12 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        startAnimation();
     }
+
+    public void startAnimation() {
+
+    }
+
 }

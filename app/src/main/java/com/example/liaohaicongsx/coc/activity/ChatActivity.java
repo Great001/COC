@@ -159,7 +159,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     sendMsg(message);
                 }
             }
-
             /**
              * 发送消息
              *
@@ -192,7 +191,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /**
-     * 判断当前消息附近是否已经存在
+     * 判断当前消息附件是否已经存在
      *
      * @param message 接收到文件附件消息
      * @return

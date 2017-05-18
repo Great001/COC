@@ -8,8 +8,14 @@
     <ImageView
         android:id="@+id/iv_splash"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
 
+    <com.example.liaohaicongsx.coc.view.MatrixImageView
+        android:id="@+id/iv_app_logo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
     <TextView
         android:id="@+id/tv_slogan"
@@ -20,7 +26,9 @@
         android:text="@string/slogan"
         android:textStyle="bold"
         android:textSize="20sp"
+        android:visibility="gone"
         />
+
 
     <Button
         android:id="@+id/btn_enter_main_page"
