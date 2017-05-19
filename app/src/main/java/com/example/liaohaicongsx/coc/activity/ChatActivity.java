@@ -23,6 +23,7 @@ import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.ChatAdapter;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
+import com.example.liaohaicongsx.coc.util.ToastUtil;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
@@ -51,6 +52,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public static final String MSG_MUSIC_PATH = "music_path";
     public static final String MSG_MUSIC_NAME = "music_name";
 
+    public static final String MSG_IMAGE_PATH = "image_path";
+
     private RelativeLayout mRlRoot;
     private ListView mLvChat;
     private EditText mEtMsg;
@@ -58,6 +61,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView mIvEmoji;
     private ImageView mIvMusic;
+    private ImageView mIvImage;
 
     private ChatAdapter mAdapter;
     private List<IMMessage> mMsgList = new ArrayList<>();
@@ -113,9 +117,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         mBtnSend = (Button) findViewById(R.id.btn_send_message);
         mIvEmoji = (ImageView) findViewById(R.id.iv_msg_emoji);
         mIvMusic = (ImageView) findViewById(R.id.iv_msg_music);
+        mIvImage = (ImageView) findViewById(R.id.iv_msg_img);
 
         mIvEmoji.setOnClickListener(this);
         mIvMusic.setOnClickListener(this);
+        mBtnSend.setOnClickListener(this);
+        mIvImage.setOnClickListener(this);
 
         mAdapter = new ChatAdapter(this);
         mAdapter.setIMMessages(mMsgList);
@@ -141,42 +148,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     mBtnSend.setClickable(false);
                     mBtnSend.setBackgroundResource(R.drawable.bg_btn_chat_send_not_able);
                 }
-            }
-        });
-
-        mBtnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Spanned messageContent = mEtMsg.getText();
-                String message = Html.toHtml(messageContent);
-                //去除转换过程中自动生成的html标签
-                int start = message.indexOf(">") + 1;
-                int end = message.lastIndexOf("</p>");
-                if (end != -1) {
-                    message = message.substring(start, end);
-                    Log.d("ChatActivity", message);
-                    //发送消息
-                    sendMsg(message);
-                }
-            }
-            /**
-             * 发送消息
-             *
-             * @param msg html格式化的文本消息
-             */
-            public void sendMsg(String msg) {
-                final IMMessage message = MessageBuilder.createTextMessage(mAccount, SessionTypeEnum.P2P, msg);
-                mMsgList.add(message);
-                mAdapter.setIMMessages(mMsgList);
-                mAdapter.notifyDataSetChanged();
-                mEtMsg.setText("");
-                NIMClient.getService(MsgService.class).sendMessage(message, true).setCallback(new RequestCallbackWrapper<Void>() {
-                    @Override
-                    public void onResult(int code, Void result, Throwable exception) {
-
-                    }
-                });
-                mLvChat.setSelection(mAdapter.getCount() - 1);
             }
         });
     }
@@ -221,6 +192,26 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+
+    /**
+     * 发送消息
+     *
+     * @param msg html格式化的文本消息
+     */
+    public void sendMsg(String msg) {
+        final IMMessage message = MessageBuilder.createTextMessage(mAccount, SessionTypeEnum.P2P, msg);
+        mMsgList.add(message);
+        mAdapter.setIMMessages(mMsgList);
+        mAdapter.notifyDataSetChanged();
+        mEtMsg.setText("");
+        NIMClient.getService(MsgService.class).sendMessage(message, true).setCallback(new RequestCallbackWrapper<Void>() {
+            @Override
+            public void onResult(int code, Void result, Throwable exception) {
+
+            }
+        });
+        mLvChat.setSelection(mAdapter.getCount() - 1);
+    }
 
     @Override
     protected void onResume() {
@@ -271,12 +262,21 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.iv_msg_music:
                 onMusicClick();
                 break;
+            case R.id.iv_msg_img:
+                onImageClick();
+                break;
+            case R.id.btn_send_message:
+                onSendClick();
+                break;
             default:
                 break;
 
         }
     }
 
+    /**
+     * 点击表情输入
+     */
     public void onEmojiClick() {
         Html.ImageGetter imageGetter = new Html.ImageGetter() {
             @Override
@@ -299,34 +299,72 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         messageContent += emoji;
         Spanned html = Html.fromHtml(messageContent, imageGetter, null);
         mEtMsg.setText(html);
+        mEtMsg.setSelection(html.length());
     }
 
+    /**
+     * 点击音乐图标跳转
+     */
     public void onMusicClick() {
         NavigationUtil.navigateToMusicSelectPage(this);
     }
 
+    /**
+     * 点击图片图标跳转
+     */
+    public void onImageClick() {
+        NavigationUtil.navigateToImageSelectPage(this);
+    }
+
+    /**
+     * 点击发送消息按钮
+     */
+    public void onSendClick() {
+        Spanned messageContent = mEtMsg.getText();
+        String message = Html.toHtml(messageContent);
+        //去除转换过程中自动生成的html标签
+        int start = message.indexOf(">") + 1;
+        int end = message.lastIndexOf("</p>");
+        if (end != -1) {
+            message = message.substring(start, end);
+            Log.d("ChatActivity", message);
+            //发送消息
+            sendMsg(message);
+        }
+    }
+
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        String name = intent.getStringExtra(MSG_MUSIC_NAME);
-        String path = intent.getStringExtra(MSG_MUSIC_PATH);
-        if (name != null && path != null) {
-            File musicFile = new File(path);
-            IMMessage message = new MessageBuilder().createFileMessage(mAccount, SessionTypeEnum.P2P, musicFile, name);
+        String musicName = intent.getStringExtra(MSG_MUSIC_NAME);
+        String musicPath = intent.getStringExtra(MSG_MUSIC_PATH);
+        String imagePath = intent.getStringExtra(MSG_IMAGE_PATH);
+        IMMessage message = null;
+        if (musicName != null && musicPath != null) {
+            File musicFile = new File(musicPath);
+            message = new MessageBuilder().createFileMessage(mAccount, SessionTypeEnum.P2P, musicFile, musicName);
             //发送文件附件消息
             NIMClient.getService(MsgService.class).sendMessage(message, true);
+        } else if (imagePath != null) {
+            File imgFile = new File(imagePath);
+            message = MessageBuilder.createImageMessage(mAccount, SessionTypeEnum.P2P, imgFile);
+            NIMClient.getService(MsgService.class).sendMessage(message, true);
+        }
+        if (message != null) {
+            mMsgList.add(message);
+            mAdapter.notifyDataSetChanged();
+            mLvChat.setSelection(mAdapter.getCount() - 1);
             // 监听消息状态变化
             Observer<IMMessage> statusObserver = new Observer<IMMessage>() {
                 @Override
                 public void onEvent(IMMessage msg) {
                     if (msg.getAttachStatus() == AttachStatusEnum.transferred) {
-
+                        ToastUtil.show(ChatActivity.this, "发送成功");
                     }
                 }
             };
-            mMsgList.add(message);
-            mAdapter.notifyDataSetChanged();
-            mLvChat.setSelection(mAdapter.getCount() - 1);
+
             //监听文件附件消息发送状态
             NIMClient.getService(MsgServiceObserve.class).observeMsgStatus(statusObserver, true);
         }

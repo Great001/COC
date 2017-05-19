@@ -20,7 +20,8 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/bg_chat_dialog"
         android:text="你好"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="true"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_chat_message_attachment_music"
@@ -36,4 +37,13 @@
         android:text="文件"
         android:textColor="@color/white"
         android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_chat_message_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="15dp"
+        android:scaleType="centerInside"
+        android:visibility="gone"/>
+
 </LinearLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_root"
     android:layout_width="match_parent"
@@ -15,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/chat_input_view_height"
         android:divider="@null"
-        android:listSelector="@android:color/transparent" />
+        android:listSelector="@android:color/transparent"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +33,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_et_chat"
             android:paddingLeft="10dp"
-            android:textCursorDrawable="@null" />
+            android:textCursorDrawable="@null"/>
 
         <Button
             android:id="@+id/btn_send_message"
@@ -43,7 +44,7 @@
             android:background="@drawable/bg_btn_chat_send_not_able"
             android:clickable="false"
             android:text="发送"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 
@@ -61,28 +62,29 @@
             android:layout_height="@dimen/chat_msg_options_icon_size"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="7dp"
+            android:layout_marginLeft="10dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/msg_voice" />
+            android:src="@drawable/msg_audio"/>
 
         <ImageView
             android:id="@+id/iv_msg_img"
             android:layout_width="@dimen/chat_msg_options_icon_size"
             android:layout_height="@dimen/chat_msg_options_icon_size"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="7dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/msg_image" />
+            android:src="@drawable/msg_picture"/>
 
         <ImageView
             android:id="@+id/iv_msg_music"
             android:layout_width="@dimen/chat_msg_options_icon_size"
             android:layout_height="@dimen/chat_msg_options_icon_size"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="7dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/music" />
+            android:src="@drawable/music"/>
 
 
         <ImageView
@@ -90,20 +92,20 @@
             android:layout_width="@dimen/chat_msg_options_icon_size"
             android:layout_height="@dimen/chat_msg_options_icon_size"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="7dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/msg_camera" />
+            android:src="@drawable/msg_camera"/>
 
         <ImageView
             android:id="@+id/iv_msg_emoji"
             android:layout_width="@dimen/chat_msg_options_icon_size"
             android:layout_height="@dimen/chat_msg_options_icon_size"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="7dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/msg_emoji_" />
+            android:src="@drawable/msg_emoji_"/>
 
 
         <ImageView
@@ -111,10 +113,11 @@
             android:layout_width="@dimen/chat_msg_options_icon_size"
             android:layout_height="@dimen/chat_msg_options_icon_size"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="7dp"
+            android:layout_marginRight="10dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/add" />
+            android:src="@drawable/msg_more"/>
 
     </LinearLayout>
 

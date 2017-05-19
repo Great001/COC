@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.liaohaicongsx.coc.MyImageLoader.MyImageLoader;
 import com.example.liaohaicongsx.coc.R;
-import com.example.myimageloader.MyImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,14 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
-import com.example.liaohaicongsx.coc.view.MatrixImageView;
+import com.example.liaohaicongsx.coc.view.MatrixAnimateView;
 
 /**
  * 启动页
@@ -29,7 +32,15 @@ public class SplashActivity extends AppCompatActivity {
      */
     private ImageView mIvAd;
 
-    private MatrixImageView mIvAppLogo;
+    /**
+     * 动画
+     */
+    private MatrixAnimateView mIvAppLogo;
+
+    /**
+     * app slogan
+     */
+    private TextView mTvSlogan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +55,15 @@ public class SplashActivity extends AppCompatActivity {
 
         mBtnEnter = (Button) findViewById(R.id.btn_enter_main_page);
         mIvAd = (ImageView) findViewById(R.id.iv_splash);
-        mIvAppLogo = (MatrixImageView) findViewById(R.id.iv_app_logo);
+        mIvAppLogo = (MatrixAnimateView) findViewById(R.id.iv_app_logo);
+        mTvSlogan = (TextView) findViewById(R.id.tv_slogan);
 
-//        MyImageLoader.getInstance(getApplicationContext()).displayImage("http://i2.muimg.com/1949/b490c083259a5dca.jpg",mIvAd);
+        mIvAppLogo.setOnAnimatorEndListener(new MatrixAnimateView.OnAnimatorEndListener() {
+            @Override
+            public void onAnimatorEnd() {
+                startSloganAnimation();
+            }
+        });
 
         mBtnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,12 +76,33 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        startAnimation();
     }
 
-    public void startAnimation() {
+    /**
+     * 开启app slogan 的动画显示
+     */
+    public void startSloganAnimation() {
 
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+        alphaAnimation.setDuration(1000);
+        alphaAnimation.setFillAfter(true);
+        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                mTvSlogan.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mBtnEnter.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mTvSlogan.startAnimation(alphaAnimation);
     }
 
 }

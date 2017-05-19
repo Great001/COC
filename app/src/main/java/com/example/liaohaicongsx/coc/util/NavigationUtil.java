@@ -7,6 +7,7 @@ import com.example.liaohaicongsx.coc.activity.AddFriendActivity;
 import com.example.liaohaicongsx.coc.activity.ChatActivity;
 import com.example.liaohaicongsx.coc.activity.EditUserInfoActivity;
 import com.example.liaohaicongsx.coc.activity.FindPwdActivity;
+import com.example.liaohaicongsx.coc.activity.ImageSelectActivity;
 import com.example.liaohaicongsx.coc.activity.LoginActivity;
 import com.example.liaohaicongsx.coc.activity.MainActivity;
 import com.example.liaohaicongsx.coc.activity.RegisterActivity;
@@ -63,12 +64,26 @@ public class NavigationUtil {
         context.startActivity(intent);
     }
 
-    public static void backToChatPage(Context context, String name, String path) {
+    public static void navigateToImageSelectPage(Context context) {
+        Intent intent = new Intent(context, ImageSelectActivity.class);
+        context.startActivity(intent);
+    }
+
+
+    public static void MusicBackToChatPage(Context context, String name, String path) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(ChatActivity.MSG_MUSIC_PATH, path);
         intent.putExtra(ChatActivity.MSG_MUSIC_NAME, name);
         context.startActivity(intent);
     }
+
+    public static void ImageBackToChatPage(Context context, String imgPath) {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtra(ChatActivity.MSG_IMAGE_PATH, imgPath);
+        context.startActivity(intent);
+
+    }
+
 
 
     public static void navigateToUserInfoPage(Context context) {

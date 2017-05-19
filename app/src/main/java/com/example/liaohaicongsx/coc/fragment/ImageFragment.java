@@ -8,7 +8,8 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.myimageloader.MyImageLoader;
+import com.example.liaohaicongsx.coc.MyImageLoader.MyImageLoader;
+
 
 /**
  * Created by liaohaicongsx on 2017/05/15.

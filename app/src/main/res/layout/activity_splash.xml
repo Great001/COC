@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,21 +12,20 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
 
-    <com.example.liaohaicongsx.coc.view.MatrixImageView
+    <com.example.liaohaicongsx.coc.view.MatrixAnimateView
         android:id="@+id/iv_app_logo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/tv_slogan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
         android:gravity="center"
         android:text="@string/slogan"
-        android:textStyle="bold"
         android:textSize="20sp"
+        android:textStyle="bold"
         android:visibility="gone"
         />
 
@@ -36,8 +36,9 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center"
         android:layout_marginBottom="25dp"
+        android:background="@drawable/bg_splash_button"
+        android:gravity="center"
         android:text="@string/enter_mainpage"
-        android:background="@drawable/bg_splash_button"/>
+        android:visibility="gone"/>
 </RelativeLayout>

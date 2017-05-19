@@ -2,6 +2,7 @@ package com.example.liaohaicongsx.coc.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
@@ -12,13 +13,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.liaohaicongsx.coc.MyImageLoader.ImageResizer;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.service.MusicPlayService;
+import com.example.liaohaicongsx.coc.util.DimenUtil;
 import com.netease.nimlib.sdk.msg.attachment.FileAttachment;
+import com.netease.nimlib.sdk.msg.attachment.ImageAttachment;
 import com.netease.nimlib.sdk.msg.constant.MsgDirectionEnum;
 import com.netease.nimlib.sdk.msg.constant.MsgTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +89,7 @@ public class ChatAdapter extends BaseAdapter {
         final IMMessage message = mIMMessages.get(position);
         if (message.getMsgType() == MsgTypeEnum.file) {
             holder.mTvContent.setVisibility(View.GONE);
+            holder.mIvPic.setVisibility(View.GONE);
             holder.mTvMusic.setVisibility(View.VISIBLE);
             holder.mTvMusic.setText(((FileAttachment) message.getAttachment()).getDisplayName());
             holder.mTvMusic.setOnLongClickListener(new View.OnLongClickListener() {
@@ -99,10 +106,31 @@ public class ChatAdapter extends BaseAdapter {
                     return false;
                 }
             });
+        } else if (message.getMsgType() == MsgTypeEnum.image) {
+            holder.mIvPic.setVisibility(View.VISIBLE);
+            holder.mTvContent.setVisibility(View.GONE);
+            holder.mTvMusic.setVisibility(View.GONE);
+
+            try {
+                FileInputStream fis = new FileInputStream(((ImageAttachment) message.getAttachment()).getPath());
+                Bitmap bitmap = ImageResizer.getInstance().decodeSampledBitmapFromFD(fis.getFD(), DimenUtil.dp2px(mContext, 100), DimenUtil.dp2px(mContext, 100));
+                holder.mIvPic.setImageBitmap(bitmap);
+                holder.mIvPic.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        return false;
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
         } else {
             if (holder.mTvContent.getVisibility() != View.VISIBLE) {
                 holder.mTvContent.setVisibility(View.VISIBLE);
                 holder.mTvMusic.setVisibility(View.GONE);
+                holder.mIvPic.setVisibility(View.GONE);
             }
             holder.mTvContent.setText(Html.fromHtml(message.getContent(), mImageGetter, null));
         }
@@ -132,11 +160,13 @@ public class ChatAdapter extends BaseAdapter {
         TextView mTvContent;
         TextView mTvMusic;
         ImageView mIvAvatar;
+        ImageView mIvPic;
 
         ChatViewHolder(View itemView) {
             mTvContent = (TextView) itemView.findViewById(R.id.tv_chat_message_content);
             mTvMusic = (TextView) itemView.findViewById(R.id.tv_chat_message_attachment_music);
             mIvAvatar = (ImageView) itemView.findViewById(R.id.iv_chatter_avatar);
+            mIvPic = (ImageView) itemView.findViewById(R.id.iv_chat_message_image);
         }
     }
 

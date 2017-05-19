@@ -35,7 +35,11 @@ import java.util.List;
 public class CocApplication extends Application {
 
     public static final int ID_IM_NOTIFICATION = 0;
-    private NotifyFloatingView mNotifyFloatingView;  //消息通知悬浮窗
+
+    /**
+     * 消息通知悬浮窗
+     */
+    private NotifyFloatingView mNotifyFloatingView;
 
     @Override
     public void onCreate() {
@@ -43,6 +47,8 @@ public class CocApplication extends Application {
 
         //获取用户的accid和token，自动登录
         LoginInfo loginInfo = UserModel.getInstance().getLoginInfo(getApplicationContext());
+
+        //SDK初始化
         NIMClient.init(this, loginInfo, getSDKOptions());
 
         //加载用户资料
@@ -54,15 +60,13 @@ public class CocApplication extends Application {
         if (inMainProcess(this)) {
             mNotifyFloatingView = new NotifyFloatingView(this);
             registerSystemMsgObserver();   //监听系统通知
-            registerImMsgObserver();       //监听IM消息
+            registerImMsgObserver();       //监听IM消息通知
         }
     }
 
 
     /**
      * 获取网易云信SDK的配置选项
-     *
-     * @return
      */
     public SDKOptions getSDKOptions() {
         SDKOptions options = new SDKOptions();
@@ -104,11 +108,11 @@ public class CocApplication extends Application {
      * 注册系统通知监听器
      */
     public void registerSystemMsgObserver() {
-        //监听系统消息
         NIMClient.getService(SystemMessageObserver.class)
                 .observeReceiveSystemMsg(new Observer<SystemMessage>() {
                     @Override
                     public void onEvent(SystemMessage message) {
+                        //主要监听好友添加相关的通知
                         if (message.getType() == SystemMessageType.AddFriend) {
                             dealWithAddFriendMsg(message);
                         }
@@ -120,7 +124,6 @@ public class CocApplication extends Application {
      * 注册IM消息监听器
      */
     public void registerImMsgObserver() {
-        //监听IM消息
         Observer<List<IMMessage>> incomingMsgObserver = new Observer<List<IMMessage>>() {
             @Override
             public void onEvent(List<IMMessage> imMessages) {
