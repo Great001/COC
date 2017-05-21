@@ -1,7 +1,10 @@
 package com.example.liaohaicongsx.coc.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -12,7 +15,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -41,10 +43,40 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup mRgSelectTab;
     private TextView mTvNickName;
 
-    private ListView mLvUserProfile;
     private RelativeLayout mRlUserCard;
 
     private int mCurrentItem;
+
+    private long mExitTime;
+
+    private FragmentPagerAdapter mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = null;
+            switch (position) {
+                case 0:
+                    fragment = new MessageFragment();
+                    break;
+                case 1:
+                    fragment = new ContactsFragment();
+                    break;
+                case 2:
+                    fragment = new DynamicFragment();
+                    break;
+                default:
+                    break;
+
+            }
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         mDlMainPage = (DrawerLayout) findViewById(R.id.dl_main_page);
         mRgSelectTab = (RadioGroup) findViewById(R.id.rg_tabs_select);
         mVpTabs = (ViewPager) findViewById(R.id.vp_main_tabs);
-        mLvUserProfile = (ListView) findViewById(R.id.lv_user_profile);
+//        mLvUserProfile = (ListView) findViewById(R.id.lv_user_profile);
         mRlUserCard = (RelativeLayout) findViewById(R.id.rl_user_card);
         mRlUserCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,36 +192,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
-    FragmentPagerAdapter mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-        @Override
-        public Fragment getItem(int position) {
-            Fragment fragment = null;
-            switch (position) {
-                case 0:
-                    fragment = new MessageFragment();
-                    break;
-                case 1:
-                    fragment = new ContactsFragment();
-                    break;
-                case 2:
-                    fragment = new DynamicFragment();
-                    break;
-                default:
-                    break;
-
-            }
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-
-    };
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -210,5 +212,63 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    /**
+     * 检查是否还有fragment退栈
+     *
+     * @return
+     */
+    public boolean canPopBack() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 1) {
+            fm.popBackStack();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 退出确认
+     */
+    public void showExitComfirm() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.comfirm_to_exit);
+        builder.setPositiveButton(R.string.comfirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                AppActivityManager.getAppActivityManager().clear();
+                System.exit(1);
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        //方案一：弹出退出确认
+        if (!canPopBack()) {
+            showExitComfirm();
+
+            //方案二：连续点击两次退出
+//        if(System.currentTimeMillis() - mExitTime <= 2000){
+//            AppActivityManager.getAppActivityManager().clear();
+//            System.exit(1);
+//        }else{
+//            mExitTime = System.currentTimeMillis();
+//            ToastUtil.show(this,R.string.click_once_more_to_exit);
+//        }
+//    }
+        }
+    }
+
 }
 

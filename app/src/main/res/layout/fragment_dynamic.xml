@@ -7,11 +7,12 @@
     <com.example.liaohaicongsx.coc.view.PullToRefreshLayout
         android:id="@+id/prfl_test"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <ListView
             android:id="@+id/lv_test"
-        android:layout_width="match_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </com.example.liaohaicongsx.coc.view.PullToRefreshLayout>

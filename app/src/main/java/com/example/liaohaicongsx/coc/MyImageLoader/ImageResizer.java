@@ -70,7 +70,7 @@ public class ImageResizer {
             int halfWidth = outWidth / 2;
             int halfHeight = outHeight / 2;
 
-            while ((halfWidth / inSampleSize >= reqWidth) && (halfHeight / inSampleSize >= reqHeight)) {
+            while (((halfWidth / inSampleSize) >= reqWidth) && ((halfHeight / inSampleSize) >= reqHeight)) {
                 inSampleSize *= 2;
             }
         }

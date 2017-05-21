@@ -1,6 +1,7 @@
 package com.example.liaohaicongsx.coc.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,7 @@ public class DynamicFragment extends Fragment implements PullToRefreshLayout.OnR
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_dynamic, null);
         mPrflTest = (PullToRefreshLayout) view.findViewById(R.id.prfl_test);
         mLvTest = (ListView) view.findViewById(R.id.lv_test);
-
+        mPrflTest.setOnRefreshLister(this);
         mListImgUrl = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             mListImgUrl.add("http://i2.muimg.com/1949/732523acc12d5e27.jpg");
@@ -40,9 +41,9 @@ public class DynamicFragment extends Fragment implements PullToRefreshLayout.OnR
 //            mListImgUrl.add("http://i2.muimg.com/1949/5996c150cb12db75.jpg");
         }
 
-        mPrflTest.setOnRefreshLister(this);
         mAdapter = new LvAdapter(getActivity(), mListImgUrl);
         mLvTest.setAdapter(mAdapter);
+
 
         mLvTest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -55,13 +56,15 @@ public class DynamicFragment extends Fragment implements PullToRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        android.os.Handler handler = new android.os.Handler();
+        Handler handler = new Handler();
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mPrflTest.refreshComplete();
             }
         }, 1500);
+
 
     }
 }

@@ -52,6 +52,12 @@
 
     <string name="image_select">图片选择</string>
 
+    <string name="comfirm_to_exit">确认退出？</string>
+    <string name="comfirm">确认</string>
+    <string name="cancel">取消</string>
+
+    <string name="click_once_more_to_exit">再按一次退出</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -107,20 +107,25 @@ public class ChatAdapter extends BaseAdapter {
                 }
             });
         } else if (message.getMsgType() == MsgTypeEnum.image) {
-            holder.mIvPic.setVisibility(View.VISIBLE);
-            holder.mTvContent.setVisibility(View.GONE);
             holder.mTvMusic.setVisibility(View.GONE);
-
             try {
-                FileInputStream fis = new FileInputStream(((ImageAttachment) message.getAttachment()).getPath());
-                Bitmap bitmap = ImageResizer.getInstance().decodeSampledBitmapFromFD(fis.getFD(), DimenUtil.dp2px(mContext, 100), DimenUtil.dp2px(mContext, 100));
-                holder.mIvPic.setImageBitmap(bitmap);
-                holder.mIvPic.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        return false;
-                    }
-                });
+                String path = ((ImageAttachment) message.getAttachment()).getPath();
+                if (path != null) {
+                    holder.mIvPic.setVisibility(View.VISIBLE);
+                    holder.mTvContent.setVisibility(View.GONE);
+                    FileInputStream fis = new FileInputStream(path);
+                    Bitmap bitmap = ImageResizer.getInstance().decodeSampledBitmapFromFD(fis.getFD(), DimenUtil.dp2px(mContext, 100), DimenUtil.dp2px(mContext, 100));
+                    holder.mIvPic.setImageBitmap(bitmap);
+                    holder.mIvPic.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            return false;
+                        }
+                    });
+                } else {
+                    holder.mIvPic.setVisibility(View.GONE);
+                    holder.mTvContent.setText("图片不存在");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
