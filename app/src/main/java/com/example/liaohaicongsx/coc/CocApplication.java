@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.example.liaohaicongsx.coc.activity.AddFriendVefifyActivity;
 import com.example.liaohaicongsx.coc.activity.ChatActivity;
+import com.example.liaohaicongsx.coc.activity.MainActivity;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.SystemUtil;
 import com.example.liaohaicongsx.coc.view.NotifyFloatingView;
@@ -135,6 +136,11 @@ public class CocApplication extends Application {
                     showImMsgNotification(imMessages);
                     showNotifyWindow(imMessages.get(0));
                 }
+                if (topActivity instanceof MainActivity && ((MainActivity) topActivity).getCurrentItem() == 0) {
+                    //使用广播发送消息，进行更新
+                    Intent intent = new Intent("com.example.liaohaicongsx.coc.RecentContact.update");
+                    sendBroadcast(intent);
+                }
             }
         };
         NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(incomingMsgObserver, true);
@@ -143,6 +149,7 @@ public class CocApplication extends Application {
 
     /**
      * 处理好友添加消息
+     *
      * @param message
      */
     public void dealWithAddFriendMsg(SystemMessage message) {
@@ -167,6 +174,7 @@ public class CocApplication extends Application {
 
     /**
      * 显示好友添加请求通知
+     *
      * @param contentTitle
      * @param message
      * @param action
@@ -189,6 +197,7 @@ public class CocApplication extends Application {
 
     /**
      * 接收到IM消息时通知栏显示
+     *
      * @param imMessages
      */
     public void showImMsgNotification(List<IMMessage> imMessages) {
@@ -214,6 +223,7 @@ public class CocApplication extends Application {
 
     /**
      * 接收到消息显示悬浮通知弹窗
+     *
      * @param msg
      */
     public void showNotifyWindow(final IMMessage msg) {
@@ -236,6 +246,7 @@ public class CocApplication extends Application {
 
     /**
      * 判断当前是否在应用主进程
+     *
      * @param context
      * @return
      */

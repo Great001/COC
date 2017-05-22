@@ -54,8 +54,6 @@ public class AddFriendActivity extends BaseActivity {
                 return false;
             }
         });
-
-
     }
 
 

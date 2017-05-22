@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 联系人界面
+ * 联系人页面
  */
 public class ContactsFragment extends Fragment {
 
@@ -28,11 +28,13 @@ public class ContactsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_contacts, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_contacts, container, false);
         mLvContacts = (ListView) view.findViewById(R.id.lv_contacts);
 
-        List<String> accounts = NIMClient.getService(FriendService.class).getFriendAccounts(); // 获取所有好友帐号
-        mUserInfoList = NIMClient.getService(UserService.class).getUserInfoList(accounts); // 获取所有好友用户资料
+        // 获取所有好友帐号
+        List<String> accounts = NIMClient.getService(FriendService.class).getFriendAccounts();
+        // 获取所有好友用户资料
+        mUserInfoList = NIMClient.getService(UserService.class).getUserInfoList(accounts);
         mAdapter = new ContactsAdapter(getContext());
         if (mUserInfoList != null) {
             mAdapter.setUserInfoList(mUserInfoList);

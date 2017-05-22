@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
@@ -124,8 +125,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onBackPressed() {
-        NavigationUtil.navigateToMainPage(LoginActivity.this);
-        UserModel.getInstance().setLoginState(false);
+        AppActivityManager.getAppActivityManager().clear();
+        System.exit(1);
         super.onBackPressed();
     }
 }

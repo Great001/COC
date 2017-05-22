@@ -32,6 +32,8 @@
         android:layout_below="@id/tv_contacts_name"
         android:layout_alignLeft="@id/tv_contacts_name"
         android:layout_marginTop="10dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:text="海阔凭鱼跃，天高任鸟飞"/>
 
 </RelativeLayout>

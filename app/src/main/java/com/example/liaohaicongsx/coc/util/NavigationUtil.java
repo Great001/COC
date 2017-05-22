@@ -13,6 +13,7 @@ import com.example.liaohaicongsx.coc.activity.MainActivity;
 import com.example.liaohaicongsx.coc.activity.RegisterActivity;
 import com.example.liaohaicongsx.coc.activity.SelectMusicActivity;
 import com.example.liaohaicongsx.coc.activity.UserInfoActivity;
+import com.example.liaohaicongsx.coc.activity.UserSettingActivity;
 
 /**
  * Created by liaohaicongsx on 2017/04/13.
@@ -94,6 +95,12 @@ public class NavigationUtil {
     public static void navigateToEditUserInfoPage(Context context, String item) {
         Intent intent = new Intent(context, EditUserInfoActivity.class);
         intent.putExtra(EditUserInfoActivity.EDIT_ITEM, item);
+        context.startActivity(intent);
+    }
+
+
+    public static void navigateToSettingPage(Context context) {
+        Intent intent = new Intent(context, UserSettingActivity.class);
         context.startActivity(intent);
     }
 

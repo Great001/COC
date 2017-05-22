@@ -183,6 +183,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        NIMClient.getService(MsgService.class).clearUnreadCount(mAccount, SessionTypeEnum.P2P);
+    }
+
 
     /**
      * 监听处理收到的IM消息

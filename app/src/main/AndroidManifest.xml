@@ -39,7 +39,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.netease.nim.appKey"
-            android:value="94c68366b84a44de04bf7c5d98689423"/>
+            android:value="bc8c6eff342a2199e9d0abd58ce36f1f"/>
 
         <activity
             android:name=".activity.SplashActivity"
@@ -130,6 +130,8 @@
         <activity android:name=".activity.EditUserInfoActivity">
         </activity>
         <activity android:name=".activity.ImageSelectActivity">
+        </activity>
+        <activity android:name=".activity.UserSettingActivity">
         </activity>
     </application>
 

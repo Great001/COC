@@ -28,9 +28,10 @@ public class DynamicFragment extends Fragment implements PullToRefreshLayout.OnR
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_dynamic, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_dynamic, container, false);
         mPrflTest = (PullToRefreshLayout) view.findViewById(R.id.prfl_test);
         mLvTest = (ListView) view.findViewById(R.id.lv_test);
+
         mPrflTest.setOnRefreshLister(this);
         mListImgUrl = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -57,14 +58,11 @@ public class DynamicFragment extends Fragment implements PullToRefreshLayout.OnR
     @Override
     public void onRefresh() {
         Handler handler = new Handler();
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mPrflTest.refreshComplete();
             }
         }, 1500);
-
-
     }
 }

@@ -65,8 +65,8 @@ public class RetrofitClient {
     public Map<String, String> getHeaderMap() {
         Map<String, String> headMap = new HashMap<>();
 
-        String appKey = "94c68366b84a44de04bf7c5d98689423";
-        String appSecret = "3c15b0d1dd31";
+        String appKey = "bc8c6eff342a2199e9d0abd58ce36f1f";
+        String appSecret = "c1e5eb81cc9f";
         String nonce = String.valueOf(new Random().nextFloat());
         String curTime = String.valueOf((new Date()).getTime() / 1000L);
         String checkSum = CheckSumBuilder.getCheckSum(appSecret, nonce, curTime);

@@ -109,5 +109,4 @@ public class ASResultAdapter extends BaseAdapter {
             mTvAdd = (TextView) itemView.findViewById(R.id.tv_item_add_friend);
         }
     }
-
 }

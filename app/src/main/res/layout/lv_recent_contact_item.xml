@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
 
     <ImageView
         android:id="@+id/iv_recent_contact_avatar"
         android:layout_width="@dimen/user_avatar_size"
         android:layout_height="@dimen/user_avatar_size"
-        android:layout_margin="5dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:scaleType="centerCrop"
         android:src="@drawable/avatar"/>
 
@@ -16,32 +18,35 @@
         android:id="@+id/tv_recent_contact_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/iv_recent_contact_avatar"
-        android:layout_marginRight="50dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginRight="@dimen/recent_contact_time_width"
+        android:layout_toRightOf="@id/iv_recent_contact_avatar"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:ellipsize="end"/>
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/tv_recent_contact_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_recent_contact_name"
         android:layout_alignLeft="@id/tv_recent_contact_name"
+        android:layout_below="@id/tv_recent_contact_name"
+        android:layout_marginRight="@dimen/recent_contact_time_width"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="50dp"
-        android:maxLines="1"
         android:ellipsize="end"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_recent_contact_time"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/recent_contact_time_width"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:padding="10dp"/>
+        android:gravity="right"
+        android:textSize="10dp"
+        />
 
     <TextView
         android:id="@+id/tv_recent_unread_count"
@@ -49,12 +54,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/tv_recent_contact_time"
-        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/bg_tv_unread_count"
+        android:gravity="center"
         android:textColor="@color/white"
         android:textSize="8sp"
-        android:gravity="center"
         android:visibility="gone"
         />
 

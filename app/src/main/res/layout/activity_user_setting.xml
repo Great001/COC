@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.liaohaicongsx.coc.activity.UserSettingActivity">
+
+    <TextView
+        android:id="@+id/tv_general_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_page_item_common_height"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="通用设置"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/app_gray_divider"/>
+
+    <TextView
+        android:id="@+id/tv_security_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_page_item_common_height"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="安全设置"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/app_gray_divider"/>
+
+    <TextView
+        android:id="@+id/tv_privicy_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_page_item_common_height"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="隐私设置"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/app_gray_divider"/>
+
+    <TextView
+        android:id="@+id/tv_exit_account"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_page_item_common_height"
+        android:background="@color/red"
+        android:gravity="center"
+        android:text="@string/exit_the_account"
+        android:textColor="@color/white"/>
+</LinearLayout>

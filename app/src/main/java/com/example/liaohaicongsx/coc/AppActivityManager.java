@@ -70,11 +70,12 @@ public class AppActivityManager {
 
 
     public void clear() {
-        for (SoftReference<Activity> ref : mStack) {
+        int count = mStack.size();
+        for (int i = 0; i < count; i++) {
+            SoftReference<Activity> ref = mStack.get(i);
             if (ref != null && ref.get() != null) {
                 ref.get().finish();
             }
-            mStack.pop();
         }
     }
 

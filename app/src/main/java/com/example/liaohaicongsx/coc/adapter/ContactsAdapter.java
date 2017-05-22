@@ -57,7 +57,7 @@ public class ContactsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ContactViewHolder holder = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.lv_contacts_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.lv_contacts_item, parent, false);
             holder = new ContactViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -68,8 +68,8 @@ public class ContactsAdapter extends BaseAdapter {
         final String name = user.getName();
         String signature = user.getSignature();
 
-        holder.mTvName.setText(TextUtils.isEmpty(name) ? "海阔天空" : name);
-        holder.mTvSign.setText(TextUtils.isEmpty(signature) ? "海阔凭鱼跃，天高任鸟飞" : signature);
+        holder.mTvName.setText(TextUtils.isEmpty(name) ? "chatter" : name);
+        holder.mTvSign.setText(TextUtils.isEmpty(signature) ? "海内存知己，天涯若比邻" : signature);
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

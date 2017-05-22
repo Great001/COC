@@ -1,7 +1,5 @@
 package com.example.liaohaicongsx.coc.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +27,7 @@ import com.example.liaohaicongsx.coc.fragment.MessageFragment;
 import com.example.liaohaicongsx.coc.model.ResponseUser;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.NavigationUtil;
+import com.example.liaohaicongsx.coc.util.ToastUtil;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -42,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mVpTabs;
     private RadioGroup mRgSelectTab;
     private TextView mTvNickName;
+    private TextView mTvSetting;
 
     private RelativeLayout mRlUserCard;
 
@@ -99,6 +99,13 @@ public class MainActivity extends AppCompatActivity {
         mRgSelectTab = (RadioGroup) findViewById(R.id.rg_tabs_select);
         mVpTabs = (ViewPager) findViewById(R.id.vp_main_tabs);
 //        mLvUserProfile = (ListView) findViewById(R.id.lv_user_profile);
+        mTvSetting = (TextView) findViewById(R.id.tv_setting);
+        mTvSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigationUtil.navigateToSettingPage(MainActivity.this);
+            }
+        });
         mRlUserCard = (RelativeLayout) findViewById(R.id.rl_user_card);
         mRlUserCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 ((RadioButton) mRgSelectTab.getChildAt(mCurrentItem)).setTextColor(getResources().getColor(R.color.black));
                 ((RadioButton) mRgSelectTab.getChildAt(position)).setTextColor(getResources().getColor(R.color.colorPrimary));
                 mCurrentItem = position;
-
             }
 
             @Override
@@ -228,46 +234,29 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    /**
-     * 退出确认
-     */
-    public void showExitComfirm() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.comfirm_to_exit);
-        builder.setPositiveButton(R.string.comfirm, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-//                AppActivityManager.getAppActivityManager().clear();
-                System.exit(1);
-            }
-        });
-
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        builder.create().show();
-    }
 
 
     @Override
     public void onBackPressed() {
-        //方案一：弹出退出确认
         if (!canPopBack()) {
-            showExitComfirm();
-
-            //方案二：连续点击两次退出
-//        if(System.currentTimeMillis() - mExitTime <= 2000){
-//            AppActivityManager.getAppActivityManager().clear();
-//            System.exit(1);
-//        }else{
-//            mExitTime = System.currentTimeMillis();
-//            ToastUtil.show(this,R.string.click_once_more_to_exit);
-//        }
-//    }
+            if (System.currentTimeMillis() - mExitTime <= 2000) {
+                AppActivityManager.getAppActivityManager().clear();
+                System.exit(1);
+            } else {
+                mExitTime = System.currentTimeMillis();
+                ToastUtil.show(this, R.string.click_once_more_to_exit);
+            }
         }
+
+    }
+
+    /**
+     * 获取当前Activity所在哪个tab中
+     *
+     * @return
+     */
+    public int getCurrentItem() {
+        return mCurrentItem;
     }
 
 }

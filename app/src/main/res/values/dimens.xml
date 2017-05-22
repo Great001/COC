@@ -24,4 +24,9 @@
 
     <dimen name="chat_msg_options_icon_size">25dp</dimen>
 
+    <dimen name="setting_page_item_common_height">50dp</dimen>
+
+    <!--recent contact-->
+    <dimen name="recent_contact_time_width">60dp</dimen>
+
 </resources>
