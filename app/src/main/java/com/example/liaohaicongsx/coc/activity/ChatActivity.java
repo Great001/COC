@@ -31,6 +31,7 @@ import com.netease.nimlib.sdk.msg.MessageBuilder;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.attachment.FileAttachment;
+import com.netease.nimlib.sdk.msg.attachment.ImageAttachment;
 import com.netease.nimlib.sdk.msg.constant.AttachStatusEnum;
 import com.netease.nimlib.sdk.msg.constant.MsgTypeEnum;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
@@ -73,19 +74,49 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private Observer<List<IMMessage>> mIncomingMsgObserver = new Observer<List<IMMessage>>() {
         @Override
-        public void onEvent(List<IMMessage> imMessages) {
-            for (IMMessage message : imMessages) {
+        public void onEvent(final List<IMMessage> imMessages) {
+            for (final IMMessage message : imMessages) {
                 if (message.getMsgType() == MsgTypeEnum.file && !isFileAttachmentExists(message)) {
                     //自动下载附件文件
-                    NIMClient.getService(MsgService.class).downloadAttachment(message, true);
+                    NIMClient.getService(MsgService.class).downloadAttachment(message, false).setCallback(new RequestCallbackWrapper() {
+                        @Override
+                        public void onResult(int code, Object result, Throwable exception) {
+                            if (code == 200) {
+                                updateMessage(message);
+                            }
+                        }
+                    });
+                } else if (message.getMsgType() == MsgTypeEnum.image && !isImageAttachmentExists(message)) {
+                    NIMClient.getService(MsgService.class).downloadAttachment(message, false).setCallback(new RequestCallbackWrapper() {
+                        @Override
+                        public void onResult(int code, Object result, Throwable exception) {
+                            if (code == 200) {
+                                updateMessage(message);
+                            }
+                        }
+                    });
+                } else {
+                    updateMessage(message);
                 }
             }
-            mMsgList.addAll(imMessages);
-            mAdapter.setIMMessages(mMsgList);
-            mAdapter.notifyDataSetChanged();
-            mLvChat.setSelection(mAdapter.getCount() - 1);
+
+
         }
     };
+
+
+    /**
+     * 接收到消息时更新显示
+     *
+     * @param message
+     */
+    public void updateMessage(IMMessage message) {
+        mMsgList.add(message);
+        mAdapter.setIMMessages(mMsgList);
+        mAdapter.notifyDataSetChanged();
+        mLvChat.setSelection(mAdapter.getCount() - 1);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +201,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isFileAttachmentExists(IMMessage message) {
         if (message.getAttachStatus() == AttachStatusEnum.transferred &&
                 !TextUtils.isEmpty(((FileAttachment) message.getAttachment()).getPath())) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isImageAttachmentExists(IMMessage message) {
+        if (message.getAttachStatus() == AttachStatusEnum.transferred &&
+                !TextUtils.isEmpty(((ImageAttachment) message.getAttachment()).getPath())) {
             return true;
         }
         return false;
@@ -364,7 +403,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             };
-
             //监听文件附件消息发送状态
             NIMClient.getService(MsgServiceObserve.class).observeMsgStatus(statusObserver, true);
         }

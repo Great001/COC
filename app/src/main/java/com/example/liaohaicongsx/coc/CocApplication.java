@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 
+import com.example.liaohaicongsx.coc.activity.AddFriendVefifyActivity;
 import com.example.liaohaicongsx.coc.activity.ChatActivity;
 import com.example.liaohaicongsx.coc.model.UserModel;
 import com.example.liaohaicongsx.coc.util.SystemUtil;
@@ -178,7 +179,7 @@ public class CocApplication extends Application {
         builder.setContentTitle(getResources().getString(contentTitle));
         builder.setContentText(message.getContent());
         Intent intent = new Intent(action);
-        intent.putExtra(ChatActivity.ACCOUNT, message.getFromAccount());
+        intent.putExtra(AddFriendVefifyActivity.KEY_SYSTEM_MSG, message);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);

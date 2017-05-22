@@ -17,6 +17,7 @@ import com.example.liaohaicongsx.coc.MyImageLoader.ImageResizer;
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.service.MusicPlayService;
 import com.example.liaohaicongsx.coc.util.DimenUtil;
+import com.example.liaohaicongsx.coc.util.ToastUtil;
 import com.netease.nimlib.sdk.msg.attachment.FileAttachment;
 import com.netease.nimlib.sdk.msg.attachment.ImageAttachment;
 import com.netease.nimlib.sdk.msg.constant.MsgDirectionEnum;
@@ -102,30 +103,31 @@ public class ChatAdapter extends BaseAdapter {
                         Intent intent = new Intent(mContext, MusicPlayService.class);
                         intent.putExtra(MusicPlayService.MUSIC_PATH, file.getPath());
                         mContext.startService(intent);
+                    } else {
+                        ToastUtil.show(mContext, R.string.file_not_exist);
                     }
                     return false;
                 }
             });
         } else if (message.getMsgType() == MsgTypeEnum.image) {
             holder.mTvMusic.setVisibility(View.GONE);
+            holder.mTvContent.setVisibility(View.GONE);
+            holder.mIvPic.setVisibility(View.VISIBLE);
             try {
                 String path = ((ImageAttachment) message.getAttachment()).getPath();
                 if (path != null) {
-                    holder.mIvPic.setVisibility(View.VISIBLE);
-                    holder.mTvContent.setVisibility(View.GONE);
                     FileInputStream fis = new FileInputStream(path);
                     Bitmap bitmap = ImageResizer.getInstance().decodeSampledBitmapFromFD(fis.getFD(), DimenUtil.dp2px(mContext, 100), DimenUtil.dp2px(mContext, 100));
                     holder.mIvPic.setImageBitmap(bitmap);
-                    holder.mIvPic.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            return false;
-                        }
-                    });
                 } else {
-                    holder.mIvPic.setVisibility(View.GONE);
-                    holder.mTvContent.setText("图片不存在");
+                    holder.mIvPic.setImageResource(R.drawable.image_default);
                 }
+                holder.mIvPic.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        return false;
+                    }
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }

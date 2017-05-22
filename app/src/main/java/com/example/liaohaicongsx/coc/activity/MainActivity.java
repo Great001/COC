@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.comfirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                AppActivityManager.getAppActivityManager().clear();
+//                AppActivityManager.getAppActivityManager().clear();
                 System.exit(1);
             }
         });

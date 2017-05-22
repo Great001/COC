@@ -58,6 +58,8 @@
 
     <string name="click_once_more_to_exit">再按一次退出</string>
 
+    <string name="file_not_exist">文件不存在</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class AddFriendVefifyActivity extends BaseActivity {
 
+    public static final String KEY_SYSTEM_MSG = "system_msg";
+
     private ListView mLvNewFriends;
     private NewFriendAdapter mAdapter;
     private List<SystemMessage> mSystemMessages = new ArrayList<>();
@@ -24,7 +26,7 @@ public class AddFriendVefifyActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend_vefify);
 
-        SystemMessage message = (SystemMessage) getIntent().getSerializableExtra("message");
+        SystemMessage message = (SystemMessage) getIntent().getSerializableExtra(KEY_SYSTEM_MSG);
         mSystemMessages.add(message);
 
 
