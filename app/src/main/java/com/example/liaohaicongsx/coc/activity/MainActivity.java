@@ -1,9 +1,14 @@
 package com.example.liaohaicongsx.coc.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -17,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.liaohaicongsx.coc.AppActivityManager;
 import com.example.liaohaicongsx.coc.R;
@@ -92,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
         }
         AppActivityManager.getAppActivityManager().push(this);
         initView();
+
+        //弹窗权限请求,但好像无效
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW}, 111);
+            }
+        }
+        Toast.makeText(this, "请先到设置界面开通悬浮窗和锁屏显示权限", Toast.LENGTH_LONG).show();
     }
 
     public void initView() {

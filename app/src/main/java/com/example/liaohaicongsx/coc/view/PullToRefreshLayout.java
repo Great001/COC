@@ -53,7 +53,7 @@ public class PullToRefreshLayout extends LinearLayout {
     private int mToY;
     private int mDisY;
 
-    private int mFinishRefresh = STATUS_FINISH_REFRESH;
+    private int mRefreshStatus = STATUS_FINISH_REFRESH;
 
     private OnRefreshListener mOnRefreshListener;
 
@@ -64,7 +64,7 @@ public class PullToRefreshLayout extends LinearLayout {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_REFRESH_ERROR:
-                    if (mFinishRefresh == STATUS_REFRESHING) {
+                    if (mRefreshStatus == STATUS_REFRESHING) {
                         mTvRefreshStatus.setText(R.string.refresh_failed);
                         mPbLoading.setVisibility(GONE);
                         handler.sendEmptyMessageDelayed(MSG_FINISH_REFRESH, 2000);
@@ -101,6 +101,14 @@ public class PullToRefreshLayout extends LinearLayout {
     }
 
 
+    public int getRefreshStatus() {
+        return mRefreshStatus;
+    }
+
+    public void setRefreshStatus(int refreshStatus) {
+        mRefreshStatus = refreshStatus;
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -113,6 +121,7 @@ public class PullToRefreshLayout extends LinearLayout {
             mHeadView.setLayoutParams(mHeaderParams);
             mListView = (ListView) getChildAt(1);  //获取listView实例
             mIsFirstLayout = false;
+
         }
     }
 
@@ -135,7 +144,7 @@ public class PullToRefreshLayout extends LinearLayout {
                     break;
             }
         }
-        if (mFinishRefresh == STATUS_REFRESHING) {
+        if (mRefreshStatus == STATUS_REFRESHING) {
             return true;
         }
         return super.onInterceptTouchEvent(ev);
@@ -156,14 +165,14 @@ public class PullToRefreshLayout extends LinearLayout {
                 if (mDisY < TOUCH_SLOP) {
                     break;
                 }
-                if (mFinishRefresh != STATUS_REFRESHING) {
+                if (mRefreshStatus != STATUS_REFRESHING) {
                     mHeaderParams.topMargin += (mDisY * 0.4);
                     if (mHeaderParams.topMargin < 15) {
                         mTvRefreshStatus.setText(R.string.pull_to_refresh);
-                        mFinishRefresh = STATUS_PULL_TO_REFRESH;
+                        mRefreshStatus = STATUS_PULL_TO_REFRESH;
                     } else {
                         mTvRefreshStatus.setText(R.string.release_to_refresh);
-                        mFinishRefresh = STATUS_RELEASE_TO_REFRESH;
+                        mRefreshStatus = STATUS_RELEASE_TO_REFRESH;
                     }
 
                     if (mHeaderParams.topMargin >= mMaxTopMargin) {
@@ -177,14 +186,14 @@ public class PullToRefreshLayout extends LinearLayout {
                 break;
             case MotionEvent.ACTION_UP:
             default:
-                if (mFinishRefresh == STATUS_PULL_TO_REFRESH) {
+                if (mRefreshStatus == STATUS_PULL_TO_REFRESH) {
                     mHeaderParams.topMargin = -mHeaderHeight;
                     mHeadView.setLayoutParams(mHeaderParams);
-                    mFinishRefresh = STATUS_FINISH_REFRESH;
-                } else if (mFinishRefresh == STATUS_RELEASE_TO_REFRESH) {
+                    mRefreshStatus = STATUS_FINISH_REFRESH;
+                } else if (mRefreshStatus == STATUS_RELEASE_TO_REFRESH) {
                     mPbLoading.setVisibility(VISIBLE);
                     mTvRefreshStatus.setText(R.string.refreshing);
-                    mFinishRefresh = STATUS_REFRESHING;
+                    mRefreshStatus = STATUS_REFRESHING;
 //                        handler.sendEmptyMessageAtTime(MSG_REFRESH_ERROR, SystemClock.uptimeMillis() + REFRESH_TIME_OUT);
                     doRefresh();
                 }
@@ -197,7 +206,7 @@ public class PullToRefreshLayout extends LinearLayout {
         if (mListView.getChildCount() != 0) {
             if (mListView.getFirstVisiblePosition() == 0) {
                 int firstViewTop = mListView.getChildAt(0).getTop();
-                return firstViewTop == mListView.getTop() && mFinishRefresh != STATUS_REFRESHING;
+                return firstViewTop == mListView.getTop() && mRefreshStatus != STATUS_REFRESHING;
             } else {
                 return false;
             }
@@ -220,7 +229,7 @@ public class PullToRefreshLayout extends LinearLayout {
         mPbLoading.setVisibility(GONE);
         mHeaderParams.topMargin = -mHeaderHeight;
         mHeadView.setLayoutParams(mHeaderParams);
-        mFinishRefresh = STATUS_FINISH_REFRESH;
+        mRefreshStatus = STATUS_FINISH_REFRESH;
     }
 
     public void refreshError() {

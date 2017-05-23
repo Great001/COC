@@ -3,6 +3,8 @@ package com.example.liaohaicongsx.coc.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,14 +26,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     private Context mCtx;
     private Cursor mCursor;
+    private Handler mHandler;
 
     private OnItemClickListener mItemClickListener;
 
     public ImageAdapter(Context context, Cursor cursor) {
         mCtx = context;
         mCursor = cursor;
+        mHandler = new Handler(Looper.getMainLooper());
     }
-
 
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,22 +46,41 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(final ImageViewHolder holder, final int position) {
         mCursor.moveToPosition(position);
-        String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        try {
-            FileInputStream fis = new FileInputStream(path);
-            Bitmap bitmap = ImageResizer.getInstance().decodeSampledBitmapFromFD(fis.getFD(), DimenUtil.dp2px(mCtx, 100), DimenUtil.dp2px(mCtx, 100));
-            holder.ivItem.setImageBitmap(bitmap);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mItemClickListener != null) {
-                        mItemClickListener.onItemClick(v, position);
+        final String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(path);
+                    final Bitmap bitmap = ImageResizer.getInstance().decodeSampledBitmapFromFD(fis.getFD(), DimenUtil.dp2px(mCtx, 100), DimenUtil.dp2px(mCtx, 100));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            holder.ivItem.setImageBitmap(bitmap);
+                        }
+                    });
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mItemClickListener != null) {
+                                mItemClickListener.onItemClick(v, position);
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (fis != null) {
+                            fis.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            }
+        }).start();
 
     }
 

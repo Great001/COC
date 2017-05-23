@@ -11,7 +11,8 @@
         android:layout_height="30dp"
         style="?android:attr/progressBarStyleSmall"
         android:indeterminate="true"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_refresh_status"

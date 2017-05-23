@@ -4,10 +4,14 @@
     android:layout_height="match_parent"
     tools:context="com.example.liaohaicongsx.coc.fragment.ContactsFragment">
 
-
+    <com.example.liaohaicongsx.coc.view.PullToRefreshLayout
+        android:id="@+id/prl_contact"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ListView
         android:id="@+id/lv_contacts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"/>
+    </com.example.liaohaicongsx.coc.view.PullToRefreshLayout>
 
 </FrameLayout>

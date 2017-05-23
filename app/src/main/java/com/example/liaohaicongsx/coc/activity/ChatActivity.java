@@ -140,7 +140,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         observeRecvMessage();
     }
 
-
     public void initView() {
         mRlRoot = (RelativeLayout) findViewById(R.id.rl_root);
         mLvChat = (ListView) findViewById(R.id.lv_chat);
@@ -182,13 +181,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        NIMClient.getService(MsgService.class).clearUnreadCount(mAccount, SessionTypeEnum.P2P);
-    }
-
 
     /**
      * 监听处理收到的IM消息
@@ -288,6 +280,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         setIsForground(false);
+        NIMClient.getService(MsgService.class).clearUnreadCount(mAccount, SessionTypeEnum.P2P);
     }
 
     public boolean isForground() {
@@ -355,6 +348,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 点击拍照
+     */
+    public void onCameraClick() {
+    }
+
+
+    /**
      * 点击图片图标跳转
      */
     public void onImageClick() {
@@ -413,6 +413,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             NIMClient.getService(MsgServiceObserve.class).observeMsgStatus(statusObserver, true);
         }
     }
+
 
     @Override
     protected void onDestroy() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 
 import com.example.liaohaicongsx.coc.R;
 import com.example.liaohaicongsx.coc.adapter.RecentContactAdapter;
+import com.example.liaohaicongsx.coc.view.PullToRefreshLayout;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.msg.MsgService;
@@ -23,8 +25,9 @@ import java.util.List;
 /**
  * 最近消息页
  */
-public class MessageFragment extends Fragment {
+public class MessageFragment extends Fragment implements PullToRefreshLayout.OnRefreshListener {
 
+    private PullToRefreshLayout mPullToRefreshLayout;
     private ListView mLvRecentContact;
     private RecentContactAdapter mAdapter;
 
@@ -41,9 +44,12 @@ public class MessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_message, container, false);
+        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.prl_message);
         mLvRecentContact = (ListView) view.findViewById(R.id.lv_recent_contact);
         mAdapter = new RecentContactAdapter(getContext());
         mLvRecentContact.setAdapter(mAdapter);
+
+        mPullToRefreshLayout.setOnRefreshLister(this);
 
         //注册广播
         getActivity().registerReceiver(mReceiver, new IntentFilter("com.example.liaohaicongsx.coc.RecentContact.update"));
@@ -67,9 +73,30 @@ public class MessageFragment extends Fragment {
                     mListRecentContact = result;
                     mAdapter.setRecentContacts(mListRecentContact);
                     mAdapter.notifyDataSetChanged();
+
+                    //刷新太快了，特意延迟以显示刷新效果
+                    if (mPullToRefreshLayout.getRefreshStatus() == PullToRefreshLayout.STATUS_REFRESHING) {
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mPullToRefreshLayout.refreshComplete();
+                            }
+                        }, 2000);
+
+                    }
+                } else {
+                    if (mPullToRefreshLayout.getRefreshStatus() == PullToRefreshLayout.STATUS_REFRESHING) {
+                        mPullToRefreshLayout.refreshError();
+                    }
                 }
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        updateRecentContact();
     }
 
     @Override

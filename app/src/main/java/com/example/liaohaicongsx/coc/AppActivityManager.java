@@ -70,9 +70,8 @@ public class AppActivityManager {
 
 
     public void clear() {
-        int count = mStack.size();
-        for (int i = 0; i < count; i++) {
-            SoftReference<Activity> ref = mStack.get(i);
+        while (!mStack.empty()) {
+            SoftReference<Activity> ref = mStack.pop();
             if (ref != null && ref.get() != null) {
                 ref.get().finish();
             }
