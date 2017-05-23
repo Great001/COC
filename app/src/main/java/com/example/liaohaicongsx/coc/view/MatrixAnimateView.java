@@ -135,6 +135,9 @@ public class MatrixAnimateView extends ImageView {
         valueAnimator.start();
     }
 
+    /**
+     * 动画结束回调接口
+     */
     public interface OnAnimatorEndListener {
         void onAnimatorEnd();
     }

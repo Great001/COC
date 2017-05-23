@@ -13,6 +13,12 @@ import com.example.liaohaicongsx.coc.util.NavigationUtil;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.auth.AuthService;
 
+/**
+ * Author Hancher
+ * Date 2017/05/23
+ * Contact liaohaicongsx@gomo.com
+ * 用户设置页面
+ */
 public class UserSettingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView mTvExitAccount;

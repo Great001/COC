@@ -57,7 +57,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            holder.ivItem.setImageBitmap(bitmap);
+                            holder.mIvItem.setImageBitmap(bitmap);
                         }
                     });
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -92,12 +92,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         return 0;
     }
 
+    /**
+     * 图片选择Item
+     */
     class ImageViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivItem;
+        ImageView mIvItem;
 
         ImageViewHolder(View itemView) {
             super(itemView);
-            ivItem = (ImageView) itemView.findViewById(R.id.iv_item);
+            mIvItem = (ImageView) itemView.findViewById(R.id.iv_item);
         }
     }
 

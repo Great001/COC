@@ -17,6 +17,8 @@
         android:gravity="center"
         android:padding="5dp"
         android:text="文件"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/white"
         android:visibility="gone" />
 

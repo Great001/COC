@@ -13,15 +13,15 @@ public class ImageResizer {
 
     //实现图片高效加载
 
-    private volatile static ImageResizer instance;
+    private volatile static ImageResizer sInstance;
 
     public static ImageResizer getInstance() {
-        if (instance == null) {
+        if (sInstance == null) {
             synchronized (ImageResizer.class) {
-                instance = new ImageResizer();
+                sInstance = new ImageResizer();
             }
         }
-        return instance;
+        return sInstance;
     }
 
     //图片的压缩处理

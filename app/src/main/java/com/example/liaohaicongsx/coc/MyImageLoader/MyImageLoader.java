@@ -51,7 +51,7 @@ public class MyImageLoader {
     private ExecutorService mExecutors;
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private volatile static MyImageLoader instance;
+    private volatile static MyImageLoader INSTANCE;
 
     public MyImageLoader(Context context) {
 
@@ -76,12 +76,12 @@ public class MyImageLoader {
     }
 
     public static MyImageLoader getInstance(Context context) {
-        if (instance == null) {
+        if (INSTANCE == null) {
             synchronized (MyImageLoader.class) {
-                instance = new MyImageLoader(context);
+                INSTANCE = new MyImageLoader(context);
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
 

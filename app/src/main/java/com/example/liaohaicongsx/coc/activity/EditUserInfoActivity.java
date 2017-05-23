@@ -4,6 +4,9 @@ import android.os.Bundle;
 
 import com.example.liaohaicongsx.coc.R;
 
+/**
+ * 编辑用户资料页面
+ */
 public class EditUserInfoActivity extends BaseActivity {
 
     public static final String EDIT_ITEM = "edit_item";

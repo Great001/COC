@@ -71,14 +71,14 @@ public class NavigationUtil {
     }
 
 
-    public static void MusicBackToChatPage(Context context, String name, String path) {
+    public static void musicBackToChatPage(Context context, String name, String path) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(ChatActivity.MSG_MUSIC_PATH, path);
         intent.putExtra(ChatActivity.MSG_MUSIC_NAME, name);
         context.startActivity(intent);
     }
 
-    public static void ImageBackToChatPage(Context context, String imgPath) {
+    public static void imageBackToChatPage(Context context, String imgPath) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(ChatActivity.MSG_IMAGE_PATH, imgPath);
         context.startActivity(intent);

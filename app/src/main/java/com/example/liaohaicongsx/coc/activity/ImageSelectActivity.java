@@ -63,7 +63,7 @@ public class ImageSelectActivity extends BaseActivity implements ImageAdapter.On
     public void onItemClick(View view, int position) {
         mCursor.moveToPosition(position);
         String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        NavigationUtil.ImageBackToChatPage(this, path);
+        NavigationUtil.imageBackToChatPage(this, path);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class SelectMusicActivity extends BaseActivity {
 //                Intent intent = new Intent(SelectMusicActivity.this, MusicPlayService.class);
 //                intent.putExtra(MusicPlayService.MSG_MUSIC_PATH, path);
 //                startService(intent);
-                NavigationUtil.MusicBackToChatPage(SelectMusicActivity.this, name, path);
+                NavigationUtil.musicBackToChatPage(SelectMusicActivity.this, name, path);
 
             }
         });

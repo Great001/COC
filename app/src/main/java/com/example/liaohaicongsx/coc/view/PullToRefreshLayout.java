@@ -59,7 +59,7 @@ public class PullToRefreshLayout extends LinearLayout {
 
     private static final int REFRESH_TIME_OUT = 5000;
     //错误处理，主要针对网络错误
-    private Handler handler = new Handler(Looper.getMainLooper()) {
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -67,7 +67,7 @@ public class PullToRefreshLayout extends LinearLayout {
                     if (mRefreshStatus == STATUS_REFRESHING) {
                         mTvRefreshStatus.setText(R.string.refresh_failed);
                         mPbLoading.setVisibility(GONE);
-                        handler.sendEmptyMessageDelayed(MSG_FINISH_REFRESH, 2000);
+                        mHandler.sendEmptyMessageDelayed(MSG_FINISH_REFRESH, 2000);
                     }
                     break;
                 case MSG_FINISH_REFRESH:
@@ -166,7 +166,7 @@ public class PullToRefreshLayout extends LinearLayout {
                     break;
                 }
                 if (mRefreshStatus != STATUS_REFRESHING) {
-                    mHeaderParams.topMargin += (mDisY * 0.4);
+                    mHeaderParams.topMargin += mDisY * 0.4;
                     if (mHeaderParams.topMargin < 15) {
                         mTvRefreshStatus.setText(R.string.pull_to_refresh);
                         mRefreshStatus = STATUS_PULL_TO_REFRESH;
@@ -194,7 +194,7 @@ public class PullToRefreshLayout extends LinearLayout {
                     mPbLoading.setVisibility(VISIBLE);
                     mTvRefreshStatus.setText(R.string.refreshing);
                     mRefreshStatus = STATUS_REFRESHING;
-//                        handler.sendEmptyMessageAtTime(MSG_REFRESH_ERROR, SystemClock.uptimeMillis() + REFRESH_TIME_OUT);
+//                        mHandler.sendEmptyMessageAtTime(MSG_REFRESH_ERROR, SystemClock.uptimeMillis() + REFRESH_TIME_OUT);
                     doRefresh();
                 }
                 break;
@@ -233,10 +233,13 @@ public class PullToRefreshLayout extends LinearLayout {
     }
 
     public void refreshError() {
-        handler.sendEmptyMessage(MSG_REFRESH_ERROR);
+        mHandler.sendEmptyMessage(MSG_REFRESH_ERROR);
     }
 
 
+    /**
+     * 刷新回调接口
+     */
     public interface OnRefreshListener {
         void onRefresh();
     }

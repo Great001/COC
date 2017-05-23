@@ -63,6 +63,9 @@ public class UserInfoAdapter extends BaseAdapter {
         return convertView;
     }
 
+    /**
+     * 用户个人信息item
+     */
     private class MyViewHolder {
         TextView mTvName;
         TextView mTvContent;
